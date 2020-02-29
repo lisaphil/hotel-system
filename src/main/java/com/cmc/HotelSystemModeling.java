@@ -1,14 +1,11 @@
 package com.cmc;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
-import static com.cmc.Room.RoomType.Suite;
+import static com.cmc.RoomType.Suite;
 
 public class HotelSystemModeling {
     private int lengthInDays;
     private int numberOfRooms;
-    private HotelSystem hotelSystem;
+    private Hotel hotelSystem;
     private HotelSystemModeling(int numberOfRooms, int lengthInDays) {
         this.numberOfRooms = numberOfRooms;
         this.lengthInDays = lengthInDays;
@@ -19,7 +16,7 @@ public class HotelSystemModeling {
     }
 
     public void start() {
-        hotelSystem.book(Suite);
+        hotelSystem.book(Suite, new BookingInfo());
 
     }
 }
