@@ -1,5 +1,7 @@
 package com.cmc;
 
+import java.util.Date;
+
 import static com.cmc.RoomType.Suite;
 
 public class HotelSystemModeling {
@@ -16,7 +18,6 @@ public class HotelSystemModeling {
     }
 
     public void start() {
-        hotelSystem.book(Suite, new BookingInfo());
-
+        hotelSystem.book(Suite, new BookingInfo(1, new Date(), new Date(), "lisa"));
     }
 }
