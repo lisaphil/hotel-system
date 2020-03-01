@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.Setter;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 public class RoomTypedRequestHandler {
@@ -21,20 +22,18 @@ public class RoomTypedRequestHandler {
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
         for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType() ; i++ ) {
-            this.bookingInformation.add(createEmptyInfo(i));
+            this.bookingInformation.put(i, emptyList());
         }
     }
 
     public BookingInfo createEmptyInfo(int roomNumber) {
-        return new BookingInfo(roomNumber, new Date(), new Date(), "", true);
+        return new BookingInfo(roomNumber, new Date(), new Date(), "");
     }
 
-    public void addToBookingInformation(BookingInfo info) {
-        //check???
-        bookingInformation = bookingInformation.stream()
-                .filter(x -> (x.getRoomNumber() != info.getRoomNumber()) || x.isFreeForAllTime())
-                .collect(toList());
-        bookingInformation.add(info);
+    public void addToBookingInformation(BookingInfo info, int room) {
+        List<BookingInfo> bookingInfo = bookingInformation.get(room);
+        bookingInfo.add(info);
+        bookingInformation.replace(room, bookingInfo);
     }
 
     int getPrice() {
@@ -70,15 +69,18 @@ public class RoomTypedRequestHandler {
             // so need to take first empty room at all
             for (Map.Entry<Integer, List<BookingInfo>> entry : bookingInformation.entrySet()) {
                 if (entry.getValue().isEmpty()) {
+                    addToBookingInformation(info, entry.getKey());
                     return entry.getKey();
                 }
             }
         } else {
-            return diffInDaysPerRooms.entrySet()
+            int roomNumber = diffInDaysPerRooms.entrySet()
                     .stream()
                     .reduce((x, y) -> x.getValue() < y.getValue() ? x : y)
                     .map(Map.Entry::getKey)
-                    .get(); // TODO CHECK
+                    .get();
+            addToBookingInformation(info, roomNumber);
+            return roomNumber; // TODO CHECK
         }
         throw new Exception("all rooms are booked for this period of time");
     }
