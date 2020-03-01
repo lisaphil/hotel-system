@@ -11,4 +11,14 @@ public class BookingInfo {
     private Date to;
     private String name;
 
+    public BookingInfo(int roomNumber, Date from, Date to, String name) {
+        this.roomNumber = roomNumber;
+        this.from = from;
+        this.to = to;
+        this.name = name;
+    }
+
+    public boolean checkDate(Date from, Date to) {
+        return this.to.before(from) || to.before(this.from);
+    }
 }
