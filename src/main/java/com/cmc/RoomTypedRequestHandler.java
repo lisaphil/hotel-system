@@ -2,30 +2,54 @@ package com.cmc;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 
+import com.cmc.exceptions.BookingException;
+import com.cmc.exceptions.CheckInException;
 import lombok.Getter;
 import lombok.Setter;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 public class RoomTypedRequestHandler {
     public final static String fullBookingMessage = "all rooms are booked for this period of time";
+    public final static String fullHotelMessage = "Sorry! Currently hotel is busy! All rooms are booked for this period of time";
+    public final static String noBookingMessage = "there is no booking";
+
+    public final static double discount = 0.7;
+
     @Getter
     private RoomType type;
+    @Getter
+    private int roomsNumber;
     @Setter
     private Map<Integer, List<BookingInfo>> bookingInformation = new HashMap<>();
-    private ArrayList<BookingInfo> availabilityInformation;
+    @Getter
+    private ArrayList<BookingInfo> bookInfoList;
+
+    private ArrayList<BookingInfo> guestInformation;
 
     private boolean isFree;
     private boolean isBooked;
 
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
-        for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType(); i++) {
+        this.roomsNumber = getLastRoomOfThisType() - getLastRoomOfThisType() + 1; // TODO
+        for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType(); i++) { // TODO remove
             this.bookingInformation.put(i, emptyList());
         }
+        this.bookInfoList = new ArrayList<>();
+    }
+
+    public void addToBookInfoList(BookingInfo info) {
+        bookInfoList.add(info);
+    }
+
+    public void addToGuestInformation(BookingInfo info) {
+        guestInformation.add(info);
+    }
+
+    public void removeFromGuestInformation(BookingInfo info) {
+        guestInformation.removeIf(x -> x.equals(info));//TODO
     }
 
     public void addToBookingInformation(BookingInfo info, int room) {
@@ -46,51 +70,32 @@ public class RoomTypedRequestHandler {
         return type.getTo();
     }
 
-    int book(BookingInfo info) throws Exception {
+    boolean book(BookingInfo info) {
         LocalDate from = info.getFrom();
         LocalDate to = info.getTo();
-        Map<Integer, Integer> diffInDaysPerRooms = new HashMap<>();
-        for (Map.Entry<Integer, List<BookingInfo>> entry : bookingInformation.entrySet()) {
-            List<BookingInfo> infos = entry.getValue();
-            infos.sort(Comparator.comparing(BookingInfo::getFrom));
-            if (!infos.isEmpty()) {
-                List<BookingInfo> bookingInfosAfter = infos.stream().filter(x -> x.getFrom().isAfter(to)).collect(toList());
-                List<BookingInfo> bookingInfosBefore = infos.stream().filter(x -> x.getTo().isBefore(from)).collect(toList());
-                if (Stream.concat(bookingInfosBefore.stream(), bookingInfosAfter.stream()).collect(toList()).equals(infos)) {
-                    //choose the closest
-                    int differenceInDays = bookingInfosBefore.isEmpty() ? 100 : bookingInfosBefore.get(0).getTo().compareTo(from);//TODO
-                    diffInDaysPerRooms.put(entry.getKey(), differenceInDays);
-                }
-            }
+        boolean result = bookInfoList.stream().filter(x -> x.checkIntersection(from, to)).count() < roomsNumber;
+        if (result) {
+            addToBookInfoList(info);
         }
-        if (diffInDaysPerRooms.isEmpty()) {
-            //If nothing was added to diffInDaysPerRooms that means all rooms that have booking are not available for those days,
-            // so need to take first empty room at all
-            for (Map.Entry<Integer, List<BookingInfo>> entry : bookingInformation.entrySet()) {
-                if (entry.getValue().isEmpty()) {
-                    addToBookingInformation(info, entry.getKey());
-                    return entry.getKey();
-                }
-            }
-        } else {
-            int roomNumber = diffInDaysPerRooms.entrySet()
-                    .stream()
-                    .reduce((x, y) -> x.getValue() < y.getValue() ? x : y)
-                    .map(Map.Entry::getKey)
-                    .get();
-            addToBookingInformation(info, roomNumber);
-            return roomNumber; // TODO CHECK
-        }
-        throw new Exception(fullBookingMessage);
+        return result;
     }
 
-    void checkIn(BookingInfo info) throws Exception {
-        if (isBooked) {
-            throw new Exception("already booked");
-        } else if (!isFree) {
-            throw new Exception("not free");
-        } else {
-            this.isFree = false;
+    double checkIn(BookingInfo info, boolean pay) throws CheckInException {
+        Optional<BookingInfo> anyMatchInfo = bookInfoList.stream()
+                .filter(x ->
+                        x.getName().equalsIgnoreCase(info.getName())
+                                && x.getTo().equals(info.getTo())
+                                && x.getFrom().equals(info.getFrom()))
+                .findFirst();
+        if (anyMatchInfo.isPresent()) {
+            BookingInfo newInfo = anyMatchInfo.get();
+            if (!newInfo.isPayed()) {
+                newInfo.setPayed(pay);
+            }
+            addToGuestInformation(newInfo);
+            return newInfo.isDiscount() ? getPrice() * discount : getPrice();
         }
+        throw new CheckInException(noBookingMessage, type);
     }
+
 }

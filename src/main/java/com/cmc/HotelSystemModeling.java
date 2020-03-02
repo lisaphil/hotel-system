@@ -1,5 +1,7 @@
 package com.cmc;
 
+import com.cmc.exceptions.BookingException;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
@@ -24,9 +26,13 @@ public class HotelSystemModeling {
     public void start() {
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
-        hotelSystem.book(Suite,
-                new BookingInfo( from,
-                        to,
-                        "lisa"));
+        try {
+            hotelSystem.book(Suite,
+                    new BookingInfo( from,
+                            to,
+                            "lisa"));
+        } catch (BookingException e) {
+            e.printStackTrace();
+        }
     }
 }
