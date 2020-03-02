@@ -19,7 +19,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
-        BookingInfo lisa = new BookingInfo(1, from,
+        BookingInfo lisa = new BookingInfo( from,
                 to,
                 "Lisa");
         int roomNumber = roomTypedRequestHandler.book(lisa);
@@ -35,21 +35,21 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
-        BookingInfo sasha = new BookingInfo(1, fromSasha,
+        BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
         roomTypedRequestHandler.addToBookingInformation(sasha, 1);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 18);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
-        BookingInfo anya = new BookingInfo(1, fromAnya,
+        BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
         roomTypedRequestHandler.addToBookingInformation(anya, 1);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 25);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo gadel = new BookingInfo(1, fromGadel,
+        BookingInfo gadel = new BookingInfo( fromGadel,
                 toGadel,
                 "Gadel");
         roomTypedRequestHandler.addToBookingInformation(gadel, 1);
@@ -57,7 +57,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 21);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 23);
-        BookingInfo lisa = new BookingInfo(1, from,
+        BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
         int roomNumber = roomTypedRequestHandler.book(lisa);
@@ -73,21 +73,21 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
-        BookingInfo sasha = new BookingInfo(1, fromSasha,
+        BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
         roomTypedRequestHandler.addToBookingInformation(sasha, 1);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 18);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
-        BookingInfo anya = new BookingInfo(1, fromAnya,
+        BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
         roomTypedRequestHandler.addToBookingInformation(anya, 1);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 25);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo gadel = new BookingInfo(1, fromGadel,
+        BookingInfo gadel = new BookingInfo(fromGadel,
                 toGadel,
                 "Gadel");
         roomTypedRequestHandler.addToBookingInformation(gadel, 1);
@@ -95,7 +95,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 14);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 23);
-        BookingInfo lisa = new BookingInfo(1, from,
+        BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
         int roomNumber = roomTypedRequestHandler.book(lisa);
@@ -111,35 +111,35 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
-        BookingInfo sasha = new BookingInfo(1, fromSasha,
+        BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
         roomTypedRequestHandler.addToBookingInformation(sasha, 1);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
-        BookingInfo anya = new BookingInfo(1, fromAnya,
+        BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
         roomTypedRequestHandler.addToBookingInformation(anya, 2);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo gadel = new BookingInfo(1, fromGadel,
+        BookingInfo gadel = new BookingInfo( fromGadel,
                 toGadel,
                 "Gadel");
         roomTypedRequestHandler.addToBookingInformation(gadel, 3);
 
         LocalDate fromSergey = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toSergey = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo sergey = new BookingInfo(1, fromSergey,
+        BookingInfo sergey = new BookingInfo(fromSergey,
                 toSergey,
                 "Sergey");
         roomTypedRequestHandler.addToBookingInformation(gadel, 4);
 
         LocalDate fromDima = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toDima = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo dima = new BookingInfo(1, fromDima,
+        BookingInfo dima = new BookingInfo(fromDima,
                 toDima,
                 "Dima");
         roomTypedRequestHandler.addToBookingInformation(gadel, 5);
@@ -149,7 +149,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 14);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 18);
-        BookingInfo lisa = new BookingInfo(1, from,
+        BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
         try {
@@ -169,14 +169,14 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 15);
-        BookingInfo sasha = new BookingInfo(1, fromSasha,
+        BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
         roomTypedRequestHandler.addToBookingInformation(sasha, 1);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 13);
-        BookingInfo anya = new BookingInfo(1, fromAnya,
+        BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
         roomTypedRequestHandler.addToBookingInformation(anya, 1);
@@ -185,7 +185,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 21);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 23);
-        BookingInfo lisa = new BookingInfo(1, from,
+        BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
         int roomNumber = roomTypedRequestHandler.book(lisa);

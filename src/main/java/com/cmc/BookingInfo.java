@@ -13,7 +13,7 @@ public class BookingInfo {
     private LocalDate to;
     private String name;
 
-    public BookingInfo(int roomNumber, LocalDate from, LocalDate to, String name) {
+    public BookingInfo(LocalDate from, LocalDate to, String name) {
         //this.roomNumber = roomNumber;
         this.from = from;
         this.to = to;

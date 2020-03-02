@@ -25,7 +25,7 @@ public class HotelSystemModeling {
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
         hotelSystem.book(Suite,
-                new BookingInfo(1, from,
+                new BookingInfo( from,
                         to,
                         "lisa"));
     }
