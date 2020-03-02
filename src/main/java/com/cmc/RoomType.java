@@ -18,10 +18,12 @@ public enum RoomType {
     @Getter
     private final int to;
 
+    private final int testK = 5;
+
     RoomType(int price, int from, int to) {
         this.price = price;
-        this.from = from;
-        this.to = to;
+        this.from = from == 0 ? 1 : from;
+        this.to = to == 0 ? testK : to;
     }
 
     boolean check(int number) {

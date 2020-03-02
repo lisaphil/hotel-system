@@ -1,5 +1,6 @@
 package com.cmc;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -10,24 +11,25 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 public class RoomTypedRequestHandler {
+    public final static String fullBookingMessage = "all rooms are booked for this period of time";
     @Getter
     private RoomType type;
     @Setter
-    private Map<Integer, List<BookingInfo>> bookingInformation;
-    private List<BookingInfo> availabilityInformation;
+    private Map<Integer, List<BookingInfo>> bookingInformation = new HashMap<>();
+    private ArrayList<BookingInfo> availabilityInformation;
 
     private boolean isFree;
     private boolean isBooked;
 
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
-        for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType() ; i++ ) {
+        for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType(); i++) {
             this.bookingInformation.put(i, emptyList());
         }
     }
 
     public void addToBookingInformation(BookingInfo info, int room) {
-        List<BookingInfo> bookingInfo = bookingInformation.get(room);
+        List<BookingInfo> bookingInfo = new ArrayList<>(bookingInformation.get(room));
         bookingInfo.add(info);
         bookingInformation.replace(room, bookingInfo);
     }
@@ -35,6 +37,7 @@ public class RoomTypedRequestHandler {
     int getPrice() {
         return type.getPrice();
     }
+
     int getFirstRoomOfThisType() {
         return type.getFrom();
     }
@@ -44,18 +47,18 @@ public class RoomTypedRequestHandler {
     }
 
     int book(BookingInfo info) throws Exception {
-        Calendar from = info.getFrom();
-        Calendar to = info.getTo();
+        LocalDate from = info.getFrom();
+        LocalDate to = info.getTo();
         Map<Integer, Integer> diffInDaysPerRooms = new HashMap<>();
         for (Map.Entry<Integer, List<BookingInfo>> entry : bookingInformation.entrySet()) {
             List<BookingInfo> infos = entry.getValue();
             infos.sort(Comparator.comparing(BookingInfo::getFrom));
             if (!infos.isEmpty()) {
-                List<BookingInfo> bookingInfosAfter = infos.stream().filter(x -> x.getFrom().after(to)).collect(toList());
-                List<BookingInfo> bookingInfosBefore = infos.stream().filter(x -> x.getTo().before(from)).collect(toList());
+                List<BookingInfo> bookingInfosAfter = infos.stream().filter(x -> x.getFrom().isAfter(to)).collect(toList());
+                List<BookingInfo> bookingInfosBefore = infos.stream().filter(x -> x.getTo().isBefore(from)).collect(toList());
                 if (Stream.concat(bookingInfosBefore.stream(), bookingInfosAfter.stream()).collect(toList()).equals(infos)) {
                     //choose the closest
-                    int differenceInDays = bookingInfosBefore.isEmpty() ? 0 : bookingInfosBefore.get(0).getTo().compareTo(from);//TODO
+                    int differenceInDays = bookingInfosBefore.isEmpty() ? 100 : bookingInfosBefore.get(0).getTo().compareTo(from);//TODO
                     diffInDaysPerRooms.put(entry.getKey(), differenceInDays);
                 }
             }
@@ -78,7 +81,7 @@ public class RoomTypedRequestHandler {
             addToBookingInformation(info, roomNumber);
             return roomNumber; // TODO CHECK
         }
-        throw new Exception("all rooms are booked for this period of time");
+        throw new Exception(fullBookingMessage);
     }
 
     void checkIn(BookingInfo info) throws Exception {

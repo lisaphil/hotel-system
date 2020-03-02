@@ -1,5 +1,7 @@
 package com.cmc;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -20,9 +22,11 @@ public class HotelSystemModeling {
     }
 
     public void start() {
+        LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
+        LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
         hotelSystem.book(Suite,
-                new BookingInfo(1, new GregorianCalendar(2017, Calendar.JANUARY , 25),
-                        new GregorianCalendar(2017, Calendar.JANUARY , 30),
+                new BookingInfo(1, from,
+                        to,
                         "lisa"));
     }
 }
