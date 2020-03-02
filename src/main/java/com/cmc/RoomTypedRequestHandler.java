@@ -26,10 +26,6 @@ public class RoomTypedRequestHandler {
         }
     }
 
-    public BookingInfo createEmptyInfo(int roomNumber) {
-        return new BookingInfo(roomNumber, new Date(), new Date(), "");
-    }
-
     public void addToBookingInformation(BookingInfo info, int room) {
         List<BookingInfo> bookingInfo = bookingInformation.get(room);
         bookingInfo.add(info);
@@ -48,8 +44,8 @@ public class RoomTypedRequestHandler {
     }
 
     int book(BookingInfo info) throws Exception {
-        Date from = info.getFrom();
-        Date to = info.getTo();
+        Calendar from = info.getFrom();
+        Calendar to = info.getTo();
         Map<Integer, Integer> diffInDaysPerRooms = new HashMap<>();
         for (Map.Entry<Integer, List<BookingInfo>> entry : bookingInformation.entrySet()) {
             List<BookingInfo> infos = entry.getValue();
