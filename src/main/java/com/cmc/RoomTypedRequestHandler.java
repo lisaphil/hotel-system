@@ -33,13 +33,21 @@ public class RoomTypedRequestHandler {
 
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
-        this.roomsNumber = getLastRoomOfThisType() - getLastRoomOfThisType() + 1; // TODO
+        this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1; // TODO
         for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType(); i++) { // TODO remove
             this.bookingInformation.put(i, emptyList());
         }
         this.bookInfoList = new ArrayList<>();
     }
 
+    public DayHotelInfo checkByDate(LocalDate today ) {
+        DayHotelInfo dayHotelInfo = new DayHotelInfo();
+        long bookedRooms = bookInfoList.stream().filter(x -> x.checkToday(today)).count();
+        dayHotelInfo.setBookedRooms(Math.toIntExact(bookedRooms));
+        dayHotelInfo.setBusyRooms(emptyList());//TODO
+        dayHotelInfo.setFreeRooms(0);
+        return dayHotelInfo;
+    }
     public void addToBookInfoList(BookingInfo info) {
         bookInfoList.add(info);
     }
@@ -50,12 +58,6 @@ public class RoomTypedRequestHandler {
 
     public void removeFromGuestInformation(BookingInfo info) {
         guestInformation.removeIf(x -> x.equals(info));//TODO
-    }
-
-    public void addToBookingInformation(BookingInfo info, int room) {
-        List<BookingInfo> bookingInfo = new ArrayList<>(bookingInformation.get(room));
-        bookingInfo.add(info);
-        bookingInformation.replace(room, bookingInfo);
     }
 
     int getPrice() {

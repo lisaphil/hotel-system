@@ -3,10 +3,11 @@ package com.cmc;
 import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 
 import java.util.*;
 
-import static com.cmc.RoomType.Suite;
+import static com.cmc.RoomType.*;
 import static com.cmc.RoomTypedRequestHandler.*;
 
 public class Hotel {
@@ -20,16 +21,21 @@ public class Hotel {
     private RoomTypedRequestHandler doubleRoom;
     private RoomTypedRequestHandler doubleExtraBedRoom;
 
+    @Getter
     private ImmutableList<RoomTypedRequestHandler> handlers;
     public final static String goodByeMessage = "Thank You for staying with us!";
     public final static String priceMessage = "Thank You for staying with us! Your invoice is : ";
 
 
     Hotel(int k, int m) {
+        suiteRoom = new RoomTypedRequestHandler(Suite);
+        juniorSuiteRoom = new RoomTypedRequestHandler(JuniorSuite);
+        singleRoom = new RoomTypedRequestHandler(Single);
+        doubleRoom = new RoomTypedRequestHandler(RoomType.Double);
+        doubleExtraBedRoom = new RoomTypedRequestHandler(DoubleExtraBed);
         List<RoomTypedRequestHandler> rooms = Arrays.asList(suiteRoom, juniorSuiteRoom, singleRoom, doubleRoom, doubleExtraBedRoom);
         rooms.sort(Comparator.comparingInt(RoomTypedRequestHandler::getPrice));
         handlers = ImmutableList.copyOf(rooms);
-        suiteRoom = new RoomTypedRequestHandler(Suite);
     }
 
     //TODO test

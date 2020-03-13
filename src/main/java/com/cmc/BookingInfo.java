@@ -38,4 +38,8 @@ public class BookingInfo {
     public boolean checkIntersection(LocalDate from, LocalDate to) {
         return !this.to.isBefore(from) && !to.isBefore(this.from);
     }
+
+    public boolean checkToday(LocalDate today) {
+        return from.isBefore(today) && to.isAfter(today);
+    }
 }

@@ -19,14 +19,14 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
-        BookingInfo lisa = new BookingInfo( from,
+        BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
-        int roomNumber = roomTypedRequestHandler.book(lisa);
-        int expectedRoomNumber = 1;
+        boolean result = roomTypedRequestHandler.book(lisa);
+        boolean expectedResult = true;
 
         //Then
-        Assert.assertEquals(expectedRoomNumber, roomNumber);
+        Assert.assertEquals(expectedResult, result);
     }
 
     @Test
@@ -38,21 +38,21 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
-        roomTypedRequestHandler.addToBookingInformation(sasha, 1);
+        roomTypedRequestHandler.addToBookInfoList(sasha);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 18);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
         BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
-        roomTypedRequestHandler.addToBookingInformation(anya, 1);
+        roomTypedRequestHandler.addToBookInfoList(anya);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 25);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo gadel = new BookingInfo( fromGadel,
+        BookingInfo gadel = new BookingInfo(fromGadel,
                 toGadel,
                 "Gadel");
-        roomTypedRequestHandler.addToBookingInformation(gadel, 1);
+        roomTypedRequestHandler.addToBookInfoList(gadel);
 
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 21);
@@ -60,11 +60,11 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
-        int roomNumber = roomTypedRequestHandler.book(lisa);
-        int expectedRoomNumber = 1;
+        boolean result = roomTypedRequestHandler.book(lisa);
+        boolean expectedResult = true;
 
         //Then
-        Assert.assertEquals(expectedRoomNumber, roomNumber);
+        Assert.assertEquals(expectedResult, result);
     }
 
     @Test
@@ -76,21 +76,21 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
-        roomTypedRequestHandler.addToBookingInformation(sasha, 1);
+        roomTypedRequestHandler.addToBookInfoList(sasha);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 18);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
         BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
-        roomTypedRequestHandler.addToBookingInformation(anya, 1);
+        roomTypedRequestHandler.addToBookInfoList(anya);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 25);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
         BookingInfo gadel = new BookingInfo(fromGadel,
                 toGadel,
                 "Gadel");
-        roomTypedRequestHandler.addToBookingInformation(gadel, 1);
+        roomTypedRequestHandler.addToBookInfoList(gadel);
 
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 14);
@@ -98,11 +98,11 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
-        int roomNumber = roomTypedRequestHandler.book(lisa);
-        int expectedRoomNumber = 2;
+        boolean result = roomTypedRequestHandler.book(lisa);
+        boolean expectedResult = true;
 
         //Then
-        Assert.assertEquals(expectedRoomNumber, roomNumber);
+        Assert.assertEquals(expectedResult, result);
     }
 
     @Test
@@ -114,35 +114,35 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo sasha = new BookingInfo(fromSasha,
                 toSasha,
                 "Sasha");
-        roomTypedRequestHandler.addToBookingInformation(sasha, 1);
+        roomTypedRequestHandler.addToBookInfoList(sasha);
 
         LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 20);
         BookingInfo anya = new BookingInfo(fromAnya,
                 toAnya,
                 "Anya");
-        roomTypedRequestHandler.addToBookingInformation(anya, 2);
+        roomTypedRequestHandler.addToBookInfoList(anya);
 
         LocalDate fromGadel = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toGadel = LocalDate.of(2014, Month.JUNE, 26);
-        BookingInfo gadel = new BookingInfo( fromGadel,
+        BookingInfo gadel = new BookingInfo(fromGadel,
                 toGadel,
                 "Gadel");
-        roomTypedRequestHandler.addToBookingInformation(gadel, 3);
+        roomTypedRequestHandler.addToBookInfoList(gadel);
 
         LocalDate fromSergey = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toSergey = LocalDate.of(2014, Month.JUNE, 26);
         BookingInfo sergey = new BookingInfo(fromSergey,
                 toSergey,
                 "Sergey");
-        roomTypedRequestHandler.addToBookingInformation(gadel, 4);
+        roomTypedRequestHandler.addToBookInfoList(gadel);
 
         LocalDate fromDima = LocalDate.of(2014, Month.JUNE, 15);
         LocalDate toDima = LocalDate.of(2014, Month.JUNE, 26);
         BookingInfo dima = new BookingInfo(fromDima,
                 toDima,
                 "Dima");
-        roomTypedRequestHandler.addToBookingInformation(gadel, 5);
+        roomTypedRequestHandler.addToBookInfoList(gadel);
 
         String message = "";
 
@@ -152,46 +152,10 @@ public class RoomTypedRequestHandlerTest extends TestCase {
         BookingInfo lisa = new BookingInfo(from,
                 to,
                 "Lisa");
-        try {
-            int roomNumber = roomTypedRequestHandler.book(lisa);
-
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
+        boolean result = roomTypedRequestHandler.book(lisa);
+        boolean expectedResult = false;
 
         //Then
-        Assert.assertEquals(fullBookingMessage, message);
-    }
-
-    @Test
-    public void testBookWithSeveralAvailableRooms() throws Exception {
-        //Given
-        RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
-        LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
-        LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 15);
-        BookingInfo sasha = new BookingInfo(fromSasha,
-                toSasha,
-                "Sasha");
-        roomTypedRequestHandler.addToBookingInformation(sasha, 1);
-
-        LocalDate fromAnya = LocalDate.of(2014, Month.JUNE, 10);
-        LocalDate toAnya = LocalDate.of(2014, Month.JUNE, 13);
-        BookingInfo anya = new BookingInfo(fromAnya,
-                toAnya,
-                "Anya");
-        roomTypedRequestHandler.addToBookingInformation(anya, 1);
-
-
-        //When
-        LocalDate from = LocalDate.of(2014, Month.JUNE, 21);
-        LocalDate to = LocalDate.of(2014, Month.JUNE, 23);
-        BookingInfo lisa = new BookingInfo(from,
-                to,
-                "Lisa");
-        int roomNumber = roomTypedRequestHandler.book(lisa);
-        int expectedRoomNumber = 1;
-
-        //Then
-        Assert.assertEquals(expectedRoomNumber, roomNumber);
+        Assert.assertEquals(expectedResult, result);
     }
 }

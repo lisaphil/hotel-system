@@ -12,6 +12,7 @@ public class Main {
         int m = 0;
         int k = 0;
         boolean correctInput = false;
+
         while (!correctInput) {
             try {
                 m = in.nextInt();
