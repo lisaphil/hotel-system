@@ -1,28 +1,35 @@
 package com.cmc;
 
-import com.cmc.exceptions.ArgumentType;
 import com.cmc.exceptions.WrongInputException;
 import com.google.common.collect.ImmutableList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
-import java.util.InputMismatchException;
 
 import static com.cmc.HotelSystemModeling.createHotelSystemModeling;
+import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultArgs;
 import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 
 public class Draw extends JFrame {
+    private final String successMessage = "success!!!!!!";
     private final String tryAgainMessage = "Incorrect input";
     private final String welcomeMessage = "Please, enter number of days and total number of rooms";
     private final String wrongParams = "%s are wrong";
+
     private final static String newline = "\n";
+    private final Box contents = new Box(BoxLayout.Y_AXIS);
+    private boolean correctInput = false;
+    ;
 
 
     private JTextField daysNumberInputField;
     private final JTextField roomsNumberInputField;
     private final JLabel label;
+    private final JButton start = new JButton("Start");
+    private final JButton check = new JButton("Check");
+
     private JTable table1;
 
 
@@ -30,7 +37,6 @@ public class Draw extends JFrame {
     private DefaultTableModel tableModel;
     // Заголовки столбцов
     private static Object[] columnsHeader = RoomType.values();
-
 
 
     private HotelSystemModeling hotelSystemModeling;
@@ -56,37 +62,47 @@ public class Draw extends JFrame {
         roomsNumberInputField = new JTextField(10);
 
         //создание заголовка
-        label = new JLabel(welcomeMessage + newline);
-
-        // Создание кнопки Start
-        JButton start = new JButton("Start");
-        start.addActionListener(e -> {
+        label = new JLabel("hello");
+        label.setText(welcomeMessage + newline);
+        check.addActionListener(e -> {
             String m = daysNumberInputField.getText();
             String k = roomsNumberInputField.getText();
             try {
-                numberOfDays = Integer.valueOf(m);
+                numberOfDays = Integer.parseInt(m);
                 DaysNumber.check(numberOfDays);
-                numberOfRooms = Integer.valueOf(k);
+                numberOfRooms = Integer.parseInt(k);
                 RoomNumber.check(numberOfRooms);
+                label.setText(successMessage);
+                correctInput = true;
             } catch (NumberFormatException exception) {
+                daysNumberInputField.setText("");
+                roomsNumberInputField.setText("");
                 label.setText(tryAgainMessage + newline);
             } catch (WrongInputException ex) {
+                daysNumberInputField.setText("");
+                roomsNumberInputField.setText("");
                 label.setText(String.format(wrongParams, ex.getType().getMessageToRender()) + newline);
             }
-            hotelSystemModeling = createHotelSystemModeling(5, 20);
-            hotelSystemModeling.start();
-
         });
 
-
-        //this.table1 = getjTable();
-        Box contents = new Box(BoxLayout.Y_AXIS);
-        //contents.add(new JScrollPane(table1));
+        start.addActionListener(e -> {
+            hotelSystemModeling = correctInput
+                    ? createHotelSystemModeling(5, 20)
+                    : createHotelSystemModelingWithDefaultArgs();
+            hotelSystemModeling.start();
+            contents.removeAll();
+            contents.updateUI();
+            this.table1 = getjTable();
+            contents.add(new JScrollPane(table1));
+            setSize(800, 600);
+        });
 
         contents.add(label);
         contents.add(daysNumberInputField);
         contents.add(roomsNumberInputField);
         contents.add(start);
+        contents.add(check);
+
 
         // Вывод окна на экран
         getContentPane().add(contents);

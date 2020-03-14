@@ -12,6 +12,10 @@ import static com.cmc.RoomType.Suite;
 
 public class HotelSystemModeling {
     private int lengthInDays;
+    public static final int defaultK = 5; // each rooms Number
+    public static final int defaultM = 5; // number of days
+
+
     private int numberOfRooms;
     private Hotel hotelSystem;
 
@@ -23,6 +27,9 @@ public class HotelSystemModeling {
 
     public static HotelSystemModeling createHotelSystemModeling(int numberOfRooms, int lengthInDays) {
         return new HotelSystemModeling(numberOfRooms, lengthInDays);
+    }
+    public static HotelSystemModeling createHotelSystemModelingWithDefaultArgs() {
+        return new HotelSystemModeling(defaultK, defaultM);
     }
 
     public ImmutableList<RoomTypedRequestHandler> getRoomActionHadlers() {
