@@ -22,5 +22,4 @@ public enum ArgumentType {
             throw new WrongInputException("", this, argValue);
         }
     }
-
 }

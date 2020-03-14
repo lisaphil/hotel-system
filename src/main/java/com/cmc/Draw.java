@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
 import static com.cmc.HotelSystemModeling.createHotelSystemModeling;
@@ -64,7 +65,42 @@ public class Draw extends JFrame {
         //создание заголовка
         label = new JLabel("hello");
         label.setText(welcomeMessage + newline);
-        check.addActionListener(e -> {
+        check.addActionListener(getCheckButtonListener());
+
+        start.addActionListener(getStartButtonListener());
+
+        initialState();
+
+        // Вывод окна на экран
+        getContentPane().add(contents);
+        setSize(800, 600);
+        setVisible(true);
+    }
+
+    private void initialState() {
+        contents.add(label);
+        contents.add(daysNumberInputField);
+        contents.add(roomsNumberInputField);
+        contents.add(start);
+        contents.add(check);
+    }
+
+    private ActionListener getStartButtonListener() {
+        return e -> {
+            hotelSystemModeling = correctInput
+                    ? createHotelSystemModeling(5, 20)
+                    : createHotelSystemModelingWithDefaultArgs();
+            hotelSystemModeling.start();
+            contents.removeAll();
+            contents.updateUI();
+            this.table1 = getjTable();
+            contents.add(new JScrollPane(table1));
+            setSize(800, 600);
+        };
+    }
+
+    private ActionListener getCheckButtonListener() {
+        return e -> {
             String m = daysNumberInputField.getText();
             String k = roomsNumberInputField.getText();
             try {
@@ -75,39 +111,18 @@ public class Draw extends JFrame {
                 label.setText(successMessage);
                 correctInput = true;
             } catch (NumberFormatException exception) {
-                daysNumberInputField.setText("");
-                roomsNumberInputField.setText("");
+                clearInputFields();
                 label.setText(tryAgainMessage + newline);
             } catch (WrongInputException ex) {
-                daysNumberInputField.setText("");
-                roomsNumberInputField.setText("");
+                clearInputFields();
                 label.setText(String.format(wrongParams, ex.getType().getMessageToRender()) + newline);
             }
-        });
+        };
+    }
 
-        start.addActionListener(e -> {
-            hotelSystemModeling = correctInput
-                    ? createHotelSystemModeling(5, 20)
-                    : createHotelSystemModelingWithDefaultArgs();
-            hotelSystemModeling.start();
-            contents.removeAll();
-            contents.updateUI();
-            this.table1 = getjTable();
-            contents.add(new JScrollPane(table1));
-            setSize(800, 600);
-        });
-
-        contents.add(label);
-        contents.add(daysNumberInputField);
-        contents.add(roomsNumberInputField);
-        contents.add(start);
-        contents.add(check);
-
-
-        // Вывод окна на экран
-        getContentPane().add(contents);
-        setSize(800, 600);
-        setVisible(true);
+    private void clearInputFields() {
+        daysNumberInputField.setText("");
+        roomsNumberInputField.setText("");
     }
 
     private JTable getjTable() {

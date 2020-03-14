@@ -13,7 +13,7 @@ import static com.cmc.RoomType.Suite;
 public class HotelSystemModeling {
     private int lengthInDays;
     public static final int defaultK = 5; // each rooms Number
-    public static final int defaultM = 5; // number of days
+    public static final int defaultM = 25; // number of days
 
 
     private int numberOfRooms;
