@@ -1,8 +1,7 @@
 package com.cmc;
 
-import com.cmc.exceptions.ArgumentType;
 import com.cmc.exceptions.BookingException;
-import com.cmc.exceptions.WrongInputException;
+import com.cmc.random.RandomGenerator;
 import com.google.common.collect.ImmutableList;
 
 import java.time.LocalDate;
@@ -18,6 +17,12 @@ public class HotelSystemModeling {
 
     private int numberOfRooms;
     private Hotel hotelSystem;
+    private LocalDate startDate;
+    private LocalDate finishDate;
+    private LocalDate currentTime;
+    private long deltaHours = 2; // TODO make random
+    private RandomGenerator randomMaker;
+
 
     private HotelSystemModeling(int numberOfRooms, int lengthInDays) {
         this.numberOfRooms = numberOfRooms;
@@ -37,6 +42,13 @@ public class HotelSystemModeling {
     }
 
     public void start() {
+        startDate = LocalDate.now();
+        finishDate = startDate.plusDays(lengthInDays);
+        randomMaker = new RandomGenerator(startDate, finishDate);
+        while (currentTime.isBefore(finishDate)) {
+
+        }
+
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
         try {
