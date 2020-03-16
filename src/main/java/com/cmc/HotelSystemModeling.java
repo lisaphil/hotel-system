@@ -5,6 +5,7 @@ import com.cmc.random.RandomGenerator;
 import com.google.common.collect.ImmutableList;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static com.cmc.RoomType.Suite;
@@ -19,9 +20,9 @@ public class HotelSystemModeling {
     private Hotel hotelSystem;
     private LocalDate startDate;
     private LocalDate finishDate;
-    private LocalDate currentTime;
+    private LocalDateTime currentTime;
     private long deltaHours = 2; // TODO make random
-    private RandomGenerator randomMaker;
+    private RandomGenerator randomGenerator;
 
 
     private HotelSystemModeling(int numberOfRooms, int lengthInDays) {
@@ -44,9 +45,18 @@ public class HotelSystemModeling {
     public void start() {
         startDate = LocalDate.now();
         finishDate = startDate.plusDays(lengthInDays);
-        randomMaker = new RandomGenerator(startDate, finishDate);
-        while (currentTime.isBefore(finishDate)) {
-
+        currentTime = startDate.atStartOfDay();
+        randomGenerator = new RandomGenerator(startDate, finishDate);
+        while (currentTime.isBefore(finishDate.atStartOfDay())) {
+            BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime.toLocalDate());
+            RoomType roomType = randomGenerator.generateRoomType();
+            try {
+                hotelSystem.book(roomType,
+                        bookingInfo);
+            } catch (BookingException e) {
+                e.printStackTrace();
+            }
+            next();
         }
 
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
@@ -59,5 +69,9 @@ public class HotelSystemModeling {
         } catch (BookingException e) {
             e.printStackTrace();
         }
+    }
+
+    private void next() {
+        currentTime = currentTime.plusHours(deltaHours);
     }
 }
