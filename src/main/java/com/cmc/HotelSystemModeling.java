@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static com.cmc.RoomType.Suite;
 
@@ -38,7 +39,7 @@ public class HotelSystemModeling {
         return new HotelSystemModeling(defaultK, defaultM);
     }
 
-    public ImmutableList<RoomTypedRequestHandler> getRoomActionHadlers() {
+    public ImmutableList<RoomTypedRequestHandler> getRoomActionHandlers() {
         return hotelSystem.getHandlers();
     }
 
@@ -51,23 +52,14 @@ public class HotelSystemModeling {
             BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime.toLocalDate());
             RoomType roomType = randomGenerator.generateRoomType();
             try {
-                hotelSystem.book(roomType,
-                        bookingInfo);
+                Thread.sleep(10);
+                hotelSystem.book(roomType, bookingInfo);
             } catch (BookingException e) {
+                e.getMessage(); // log this?
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             next();
-        }
-
-        LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
-        LocalDate to = LocalDate.of(2014, Month.JUNE, 17);
-        try {
-            hotelSystem.book(Suite,
-                    new BookingInfo(from,
-                            to,
-                            "lisa"));
-        } catch (BookingException e) {
-            e.printStackTrace();
         }
     }
 

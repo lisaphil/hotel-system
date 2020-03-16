@@ -44,18 +44,12 @@ public class Draw extends JFrame {
     private int numberOfDays;
     private int numberOfRooms;
 
-    /*public void paint(Graphics g) {
-        super.paint(g);
-        g.drawLine(0, 0, 100, 100);
-
-    }*/
     public static void main(String[] args) {
         new Draw();
     }
 
     Draw() {
         super("Draw");
-        //JFrame.setDefaultLookAndFeelDecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Box box = Box.createHorizontalBox();
 
@@ -132,8 +126,8 @@ public class Draw extends JFrame {
         pack();
 
         LocalDate.now();
-        ImmutableList<RoomTypedRequestHandler> roomActionHadlers = hotelSystemModeling.getRoomActionHadlers();
-        Object[] array = roomActionHadlers.stream().map(x -> x.getBookInfoList().toString()).toArray();
+        ImmutableList<RoomTypedRequestHandler> roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
+        Object[] array = roomActionHandlers.stream().map(x -> x.getBookInfoList().toString()).toArray();
         tableModel.addRow(array);
 
         return new JTable(tableModel);
