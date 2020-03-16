@@ -3,7 +3,7 @@ package com.cmc.random;
 import com.cmc.BookingInfo;
 import com.cmc.RoomType;
 import com.google.common.collect.ImmutableList;
-import com.sun.tools.javac.util.Pair;
+import org.javatuples.Pair;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -38,30 +38,30 @@ public class RandomGenerator {
 
     public BookingInfo generateBookInfo(LocalDate currentTime) {
         Pair<LocalDate, LocalDate> fromToLocalDate = generateDate(currentTime);
-        LocalDate from = fromToLocalDate.fst;
-        LocalDate to = fromToLocalDate.snd;
+        LocalDate from = fromToLocalDate.getValue0();
+        LocalDate to = fromToLocalDate.getValue1();
         String name = pickName();
         return new BookingInfo(from, to, name);
     }
 
     public RoomType generateRoomType() {
         List<RoomType> roomTypes = Arrays.asList(RoomType.values());
-        int randomIndex = randomRoom.nextInt(roomTypes.size() + 1);
+        int randomIndex = randomRoom.nextInt(roomTypes.size());
         return roomTypes.get(randomIndex);
     }
     public Pair<LocalDate, LocalDate> generateDate(LocalDate currentTime) {
         int days = (int) Duration.between(currentTime.atStartOfDay(), finishDate.atStartOfDay()).toDays();
-        int fisrtRandom = randomDate.nextInt(days + 1);
-        int secondRandom = randomDate.nextInt(days + 1);
-        int min = min(fisrtRandom, secondRandom);
-        int max = max(fisrtRandom, secondRandom);
+        int firstRandom = randomDate.nextInt(days );
+        int secondRandom = randomDate.nextInt(days);
+        int min = min(firstRandom, secondRandom);
+        int max = max(firstRandom, secondRandom);
         LocalDate from = currentTime.plusDays(min);
         LocalDate to = currentTime.plusDays(max);
-        return Pair.of(from, to);
+        return Pair.with(from, to);
     }
 
     private String pickName() {
-        int randomIndex = randomName.nextInt(names.size() + 1);
+        int randomIndex = randomName.nextInt(names.size());
         return names.get(randomIndex);
     }
 }
