@@ -3,6 +3,7 @@ package com.cmc;
 import com.cmc.exceptions.BookingException;
 import com.cmc.random.RandomGenerator;
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,11 +25,14 @@ public class HotelSystemModeling {
     private LocalDateTime currentTime;
     private long deltaHours = 2; // TODO make random
     private RandomGenerator randomGenerator;
+    @Getter
+    private boolean finish;
 
 
     private HotelSystemModeling(int numberOfRooms, int lengthInDays) {
         this.numberOfRooms = numberOfRooms;
         this.lengthInDays = lengthInDays;
+        this.finish = false;
         this.hotelSystem = new Hotel(numberOfRooms, lengthInDays);
     }
 
@@ -61,6 +65,7 @@ public class HotelSystemModeling {
             }
             next();
         }
+        finish = true;
     }
 
     private void next() {

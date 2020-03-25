@@ -43,6 +43,7 @@ public class Draw extends JFrame {
     private HotelSystemModeling hotelSystemModeling;
     private int numberOfDays;
     private int numberOfRooms;
+    private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
 
     public static void main(String[] args) {
         new Draw();
@@ -84,12 +85,17 @@ public class Draw extends JFrame {
             hotelSystemModeling = correctInput
                     ? createHotelSystemModeling(5, 20)
                     : createHotelSystemModelingWithDefaultArgs();
-            hotelSystemModeling.start();
             contents.removeAll();
             contents.updateUI();
             this.table1 = getjTable();
             contents.add(new JScrollPane(table1));
             setSize(800, 600);
+            hotelSystemModeling.start();
+            while (!hotelSystemModeling.isFinish()) {
+                tableModel.addRow(getRow());
+                contents.add(new JScrollPane(new JTable(tableModel)));
+                contents.updateUI();
+            }
         };
     }
 
@@ -126,11 +132,14 @@ public class Draw extends JFrame {
         pack();
 
         LocalDate.now();
-        ImmutableList<RoomTypedRequestHandler> roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
-        Object[] array = roomActionHandlers.stream().map(x -> x.getBookInfoList().toString()).toArray();
-        tableModel.addRow(array);
+        roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
+        tableModel.addRow(getRow());
 
         return new JTable(tableModel);
+    }
+
+    private Object[] getRow() {
+        return roomActionHandlers.stream().map(x -> x.getBookInfoList().toString()).toArray();
     }
 
 }
