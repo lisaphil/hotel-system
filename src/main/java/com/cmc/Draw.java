@@ -1,9 +1,14 @@
 package com.cmc;
-
+import java.awt.event.ActionEvent;
 import com.cmc.exceptions.WrongInputException;
 import com.google.common.collect.ImmutableList;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -13,7 +18,7 @@ import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultAr
 import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 
-public class Draw extends JFrame {
+public class Draw extends JFrame implements ActionListener {
     private final String successMessage = "success!!!!!!";
     private final String tryAgainMessage = "Incorrect input";
     private final String welcomeMessage = "Please, enter number of days and total number of rooms";
@@ -30,6 +35,9 @@ public class Draw extends JFrame {
     private final JLabel label;
     private final JButton start = new JButton("Start");
     private final JButton check = new JButton("Check");
+    private final JLabel updateableField = new JLabel("0");
+    private final Timer timer = new Timer(1000, this);
+    private DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
     private JTable table1;
 
@@ -70,6 +78,13 @@ public class Draw extends JFrame {
         getContentPane().add(contents);
         setSize(800, 600);
         setVisible(true);
+        timer.start();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Date date = new Date();
+        updateableField.setText(dateFormat.format(date));
     }
 
     private void initialState() {
@@ -78,6 +93,7 @@ public class Draw extends JFrame {
         contents.add(roomsNumberInputField);
         contents.add(start);
         contents.add(check);
+        contents.add(updateableField);
     }
 
     private ActionListener getStartButtonListener() {
