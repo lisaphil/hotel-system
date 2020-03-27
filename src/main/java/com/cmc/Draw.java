@@ -137,14 +137,15 @@ public class Draw extends JFrame implements ActionListener{
     private JTable getjTable() {
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(columnsHeader);
-        // System.out.println(Arrays.toString(columnsHeader));
-        pack();
+        //pack();
 
         LocalDate.now();
         roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
         tableModel.addRow(getRow());
 
-        return new JTable(tableModel);
+        JTable jTable = new JTable(tableModel);
+        jTable.setRowHeight(7);
+        return jTable;
     }
 
     private String[] getRow() {
@@ -153,6 +154,7 @@ public class Draw extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        tableModel.addRow(getRow());
         updateableField.setText( Stream.of(getRow()).findFirst().get());
     }
 }
