@@ -5,15 +5,21 @@ import com.google.common.collect.ImmutableList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.stream.Stream;
 
 import static com.cmc.HotelSystemModeling.createHotelSystemModeling;
 import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultArgs;
 import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 
-public class Draw extends JFrame {
+public class Draw extends JFrame implements ActionListener{
     private final String successMessage = "success!!!!!!";
     private final String tryAgainMessage = "Incorrect input";
     private final String welcomeMessage = "Please, enter number of days and total number of rooms";
@@ -30,6 +36,10 @@ public class Draw extends JFrame {
     private final JLabel label;
     private final JButton start = new JButton("Start");
     private final JButton check = new JButton("Check");
+
+    private final JLabel updateableField = new JLabel("0");
+    private final Timer timer = new Timer(1000, this);
+    private DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
     private JTable table1;
 
@@ -90,12 +100,11 @@ public class Draw extends JFrame {
             this.table1 = getjTable();
             contents.add(new JScrollPane(table1));
             setSize(800, 600);
-            hotelSystemModeling.start();
-            while (!hotelSystemModeling.isFinish()) {
-                tableModel.addRow(getRow());
-                contents.add(new JScrollPane(new JTable(tableModel)));
-                contents.updateUI();
-            }
+            Thread myThready = new Thread(hotelSystemModeling);	//Создание потока "myThready"
+            myThready.start();
+            timer.start();
+            updateableField.setPreferredSize(new Dimension(250, 100));
+            contents.add(updateableField);
         };
     }
 
@@ -138,8 +147,12 @@ public class Draw extends JFrame {
         return new JTable(tableModel);
     }
 
-    private Object[] getRow() {
-        return roomActionHandlers.stream().map(x -> x.getBookInfoList().toString()).toArray();
+    private String[] getRow() {
+        return roomActionHandlers.stream().map(x -> x.getBookInfoList().toString()).toArray(String[]::new);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        updateableField.setText( Stream.of(getRow()).findFirst().get());
+    }
 }

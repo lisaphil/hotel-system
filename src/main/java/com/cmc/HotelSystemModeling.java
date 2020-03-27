@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.cmc.RoomType.Suite;
 
-public class HotelSystemModeling {
+public class HotelSystemModeling implements Runnable{
     private int lengthInDays;
     public static final int defaultK = 5; // each rooms Number
     public static final int defaultM = 25; // number of days
@@ -48,6 +48,14 @@ public class HotelSystemModeling {
     }
 
     public void start() {
+    }
+
+    private void next() {
+        currentTime = currentTime.plusHours(deltaHours);
+    }
+
+    @Override
+    public void run() {
         startDate = LocalDate.now();
         finishDate = startDate.plusDays(lengthInDays);
         currentTime = startDate.atStartOfDay();
@@ -56,7 +64,7 @@ public class HotelSystemModeling {
             BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime.toLocalDate());
             RoomType roomType = randomGenerator.generateRoomType();
             try {
-                Thread.sleep(10);
+                Thread.sleep(30);
                 hotelSystem.book(roomType, bookingInfo);
             } catch (BookingException e) {
                 e.getMessage(); // log this?
@@ -66,9 +74,5 @@ public class HotelSystemModeling {
             next();
         }
         finish = true;
-    }
-
-    private void next() {
-        currentTime = currentTime.plusHours(deltaHours);
     }
 }
