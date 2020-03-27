@@ -1,0 +1,238 @@
+package com.cmc;
+
+import com.cmc.exceptions.WrongInputException;
+import com.google.common.collect.ImmutableList;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.cmc.Draw.*;
+import static com.cmc.HotelSystemModeling.createHotelSystemModeling;
+import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultArgs;
+import static com.cmc.exceptions.ArgumentType.DaysNumber;
+import static com.cmc.exceptions.ArgumentType.RoomNumber;
+import static java.util.stream.Collectors.toList;
+
+public class render extends JDialog implements ActionListener {
+    private JPanel contentPane;
+    private JButton buttonOK;
+    private JButton buttonCancel;
+    private JFormattedTextField daysNumberFormattedTextField;
+    private JFormattedTextField roomsNumberFormattedTextField;
+    private JButton checkButton;
+    private JLabel label;
+    private JTable tableBook;
+    private JTable table2;
+    private int numberOfDays;
+    private int numberOfRooms;
+    private boolean correctInput = false;
+    private final static String newline = "\n";
+    private HotelSystemModeling hotelSystemModeling;
+    private final Timer timer = new Timer(1000, this);
+    private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
+    private DefaultTableModel tableBookModel;
+    private static Object[] columnsHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+    private java.util.List<BookingInfo> bookingInfos = new ArrayList<>();
+
+    public render() {
+        setContentPane(contentPane);
+        setModal(true);
+        getRootPane().setDefaultButton(buttonOK);
+
+
+        buttonOK.addActionListener(getStartButtonListener());
+
+        getBookjTable();
+        tableBook.setModel(tableBookModel);
+
+        buttonCancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        });
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                onCancel();
+            }
+        });
+
+        // call onCancel() on ESCAPE
+        contentPane.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onCancel();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        checkButton.addActionListener(getCheckButtonListener());
+    }
+
+    private ActionListener getStartButtonListener() {
+        return e -> {
+            hotelSystemModeling = correctInput
+                    ? createHotelSystemModeling(5, 20)
+                    : createHotelSystemModelingWithDefaultArgs();
+            setSize(800, 600);
+
+            Thread myThready = new Thread(hotelSystemModeling);    //Создание потока "myThready"
+            myThready.start();
+            timer.start();
+            roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
+
+        };
+    }
+
+    private ActionListener getCheckButtonListener() {
+        return e -> {
+            String m = daysNumberFormattedTextField.getText();
+            String k = roomsNumberFormattedTextField.getText();
+            try {
+                numberOfDays = Integer.parseInt(m);
+                DaysNumber.check(numberOfDays);
+                numberOfRooms = Integer.parseInt(k);
+                RoomNumber.check(numberOfRooms);
+                label.setText(successMessage);
+                correctInput = true;
+            } catch (NumberFormatException exception) {
+                clearInputFields();
+                label.setText(tryAgainMessage + newline);
+            } catch (WrongInputException ex) {
+                clearInputFields();
+                label.setText(String.format(wrongParams, ex.getType().getMessageToRender()) + newline);
+            }
+        };
+    }
+
+    private void clearInputFields() {
+        daysNumberFormattedTextField.setText("");
+        roomsNumberFormattedTextField.setText("");
+    }
+
+    private void onOK() {
+        // add your code here
+        dispose();
+    }
+
+    private void onCancel() {
+        // add your code here if necessary
+        dispose();
+    }
+
+    public static void main(String[] args) {
+        render dialog = new render();
+        dialog.pack();
+        dialog.setVisible(true);
+        System.exit(0);
+    }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        contentPane = new JPanel();
+        contentPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(10, 10, 10, 10), -1, -1));
+        contentPane.setPreferredSize(new Dimension(900, 300));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.add(panel1, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JScrollPane scrollPane1 = new JScrollPane();
+        panel1.add(scrollPane1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        tableBook = new JTable();
+        tableBook.setEnabled(false);
+        tableBook.putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
+        scrollPane1.setViewportView(tableBook);
+        final JScrollPane scrollPane2 = new JScrollPane();
+        panel1.add(scrollPane2, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        table2 = new JTable();
+        table2.setGridColor(new Color(-16777216));
+        scrollPane2.setViewportView(table2);
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPane.add(panel2, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, 1, 1, null, null, null, 0, false));
+        daysNumberFormattedTextField = new JFormattedTextField();
+        daysNumberFormattedTextField.setText("");
+        panel2.add(daysNumberFormattedTextField, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        roomsNumberFormattedTextField = new JFormattedTextField();
+        roomsNumberFormattedTextField.setText("");
+        panel2.add(roomsNumberFormattedTextField, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        label = new JLabel();
+        label.setText("Hello");
+        panel2.add(label, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel2.add(panel3, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        buttonOK = new JButton();
+        buttonOK.setText("Start");
+        panel3.add(buttonOK, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonCancel = new JButton();
+        buttonCancel.setText("Cancel");
+        panel3.add(buttonCancel, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        checkButton = new JButton();
+        checkButton.setText("Check");
+        panel3.add(checkButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
+        panel2.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return contentPane;
+    }
+
+    private TableModel getBookjTable() {
+
+        tableBookModel = new DefaultTableModel();
+        tableBookModel.setColumnIdentifiers(columnsHeader);
+        tableBookModel.addRow(Stream.of(columnsHeader).map(x -> "tt").toArray(String[]::new));
+        //tableBookModel.addRow(getRow());
+        return tableBookModel;
+    }
+
+    public java.util.List<BookingInfo> getRows() {
+        java.util.List<BookingInfo> newBookInfos = roomActionHandlers
+                .stream()
+                .map(RoomTypedRequestHandler::getBookInfoList)
+                .flatMap(Collection::stream)
+                .collect(toList());
+        java.util.List<BookingInfo> difference = newBookInfos.stream().filter(x -> !bookingInfos.contains(x)).collect(Collectors.toList());
+        bookingInfos = newBookInfos;
+        return difference;
+        //.toArray(String[]::new);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for (BookingInfo info : getRows()) {
+            tableBookModel.addRow(info.getBookInfo());
+        }
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
+}

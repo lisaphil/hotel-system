@@ -20,10 +20,10 @@ import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 
 public class Draw extends JFrame implements ActionListener{
-    private final String successMessage = "success!!!!!!";
-    private final String tryAgainMessage = "Incorrect input";
-    private final String welcomeMessage = "Please, enter number of days and total number of rooms";
-    private final String wrongParams = "%s are wrong";
+    public static final String successMessage = "success!!!!!!";
+    public static final String tryAgainMessage = "Incorrect input";
+    public static final String welcomeMessage = "Please, enter number of days and total number of rooms";
+    public static final String wrongParams = "%s are wrong";
 
     private final static String newline = "\n";
     private final Box contents = new Box(BoxLayout.Y_AXIS);
@@ -62,7 +62,6 @@ public class Draw extends JFrame implements ActionListener{
     Draw() {
         super("Draw");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Box box = Box.createHorizontalBox();
 
         daysNumberInputField = new JTextField(2);
         roomsNumberInputField = new JTextField(10);

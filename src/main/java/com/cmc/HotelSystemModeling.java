@@ -47,8 +47,6 @@ public class HotelSystemModeling implements Runnable{
         return hotelSystem.getHandlers();
     }
 
-    public void start() {
-    }
 
     private void next() {
         currentTime = currentTime.plusHours(deltaHours);
