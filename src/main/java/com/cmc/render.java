@@ -2,6 +2,8 @@ package com.cmc;
 
 import com.cmc.exceptions.WrongInputException;
 import com.google.common.collect.ImmutableList;
+import org.javatuples.Pair;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,9 +11,11 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collector;
@@ -24,6 +28,7 @@ import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultAr
 import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class render extends JDialog implements ActionListener {
     private JPanel contentPane;
@@ -44,7 +49,7 @@ public class render extends JDialog implements ActionListener {
     private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
     private DefaultTableModel tableBookModel;
     private static Object[] columnsHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
-    private java.util.List<BookingInfo> bookingInfos = new ArrayList<>();
+    private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
 
     public render() {
         setContentPane(contentPane);
@@ -207,19 +212,25 @@ public class render extends JDialog implements ActionListener {
     private TableModel getBookjTable() {
 
         tableBookModel = new DefaultTableModel();
-        tableBookModel.setColumnIdentifiers(columnsHeader);
+        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsHeader));
+        columnHeaderList.add("room type");
+        tableBookModel.setColumnIdentifiers(columnHeaderList.toArray());
         tableBookModel.addRow(Stream.of(columnsHeader).map(x -> "tt").toArray(String[]::new));
         //tableBookModel.addRow(getRow());
         return tableBookModel;
     }
 
-    public java.util.List<BookingInfo> getRows() {
-        java.util.List<BookingInfo> newBookInfos = roomActionHandlers
-                .stream()
-                .map(RoomTypedRequestHandler::getBookInfoList)
+    public java.util.List<java.util.List<String>> getRows() {
+
+        java.util.List<java.util.List<String>> newBookInfos = roomActionHandlers.stream()
+                .map(x -> x.getBookInfoList().stream().map(y -> {
+                    java.util.List<String> bookInfo = y.getBookInfo();
+                    bookInfo.add(x.getType().getName());
+                    return bookInfo;
+                }).collect(toList()))
                 .flatMap(Collection::stream)
                 .collect(toList());
-        java.util.List<BookingInfo> difference = newBookInfos.stream().filter(x -> !bookingInfos.contains(x)).collect(Collectors.toList());
+        java.util.List<java.util.List<String>> difference = newBookInfos.stream().filter(x -> !bookingInfos.contains(x)).collect(Collectors.toList());
         bookingInfos = newBookInfos;
         return difference;
         //.toArray(String[]::new);
@@ -227,8 +238,8 @@ public class render extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (BookingInfo info : getRows()) {
-            tableBookModel.addRow(info.getBookInfo());
+        for (java.util.List<String> info : getRows()) {
+            tableBookModel.addRow(info.toArray());
         }
     }
 

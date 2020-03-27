@@ -1,11 +1,14 @@
 package com.cmc;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Data
@@ -32,8 +35,8 @@ public class BookingInfo {
         this.name = name;
     }
 
-    public String[] getBookInfo() {
-        return new String[]{String.valueOf(discount), String.valueOf(isPayed), from.toString(), to.toString(), name};
+    public List<String> getBookInfo() {
+        return Lists.newArrayList( String.valueOf(discount), String.valueOf(isPayed), from.toString(), to.toString(), name);
     }
     public boolean checkDate(LocalDate from, LocalDate to) {
         return this.to.isBefore(from) || to.isBefore(this.from);
