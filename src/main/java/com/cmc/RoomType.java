@@ -5,15 +5,14 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import static com.cmc.Hotel.k;
-import static com.cmc.Hotel.maxRoomNumber;
+import static com.cmc.Hotel.*;
 
 public enum RoomType {
-    Suite(400, 1, k, "Suite"),
-    JuniorSuite(200, k + 1, 2 * k, "Junior Suite"),
-    Single(70, 2 * k + 1, 3 * k, "Single"),
-    Double(100, 3 * k + 1, 4 * k, "Double"),
-    DoubleExtraBed(120, 4 * k + 1, maxRoomNumber, "Double with Extra Bed");
+    Suite(400, 1, suiteInt - 1, "Suite"),
+    JuniorSuite(200, suiteInt + 1, suiteInt + juniourInt, "Junior Suite"),
+    Single(70, suiteInt + juniourInt + 1, suiteInt + juniourInt+ singleInt, "Single"),
+    Double(100, suiteInt + juniourInt+ singleInt + doubleInt + 1, suiteInt + juniourInt+ singleInt + doubleInt, "Double"),
+    DoubleExtraBed(120, suiteInt + juniourInt+ singleInt + doubleInt + 1, suiteInt + juniourInt+ singleInt + doubleInt + doubleWithExtra, "Double with Extra Bed");
     @Getter
     private final int price;
     @Getter

@@ -8,13 +8,11 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 
-public class HotelSystemModeling implements Runnable{
+public class HotelSystemModeling implements Runnable {
     private int lengthInDays;
-    public static final int defaultK = 5; // each rooms Number
-    public static final int defaultM = 25; // number of days
+    public static final int defaultNumberRooms = 5; // each rooms Number
+    public static final int defaultNumberDays = 25; // number of days
 
 
     private int numberOfRooms;
@@ -28,18 +26,18 @@ public class HotelSystemModeling implements Runnable{
     private boolean finish;
 
 
-    private HotelSystemModeling(int numberOfRooms, int lengthInDays) {
-        this.numberOfRooms = numberOfRooms;
+    private HotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
         this.lengthInDays = lengthInDays;
         this.finish = false;
-        this.hotelSystem = new Hotel(numberOfRooms, lengthInDays);
+        this.hotelSystem = new Hotel(suiteInt, juniourInt, singleInt, doubleInt, doubleWithExtra);
     }
 
-    public static HotelSystemModeling createHotelSystemModeling(int numberOfRooms, int lengthInDays) {
-        return new HotelSystemModeling(numberOfRooms, lengthInDays);
+    public static HotelSystemModeling createHotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
+        return new HotelSystemModeling(suiteInt, juniourInt, singleInt, doubleInt, doubleWithExtra, lengthInDays);
     }
+
     public static HotelSystemModeling createHotelSystemModelingWithDefaultArgs() {
-        return new HotelSystemModeling(defaultK, defaultM);
+        return new HotelSystemModeling(defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberDays);
     }
 
     public ImmutableList<RoomTypedRequestHandler> getRoomActionHandlers() {

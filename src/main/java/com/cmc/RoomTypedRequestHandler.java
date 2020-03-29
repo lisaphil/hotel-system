@@ -36,9 +36,6 @@ public class RoomTypedRequestHandler {
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
         this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1; // TODO
-        for (int i = getFirstRoomOfThisType(); i <= getLastRoomOfThisType(); i++) { // TODO remove
-            this.bookingInformation.put(i, emptyList());
-        }
         this.bookInfoList = new ArrayList<>();
     }
 

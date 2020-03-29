@@ -15,9 +15,12 @@ import static com.cmc.RoomTypedRequestHandler.*;
 import static java.util.stream.Collectors.toList;
 
 public class Hotel {
-    public static int k;
+    public static int suiteInt;
+    public static int juniourInt;
+    public static int singleInt;
+    public static int doubleInt;
+    public static int doubleWithExtra;
     public static int maxRoomNumber;
-    public static int m;
 
     private RoomTypedRequestHandler suiteRoom;
     private RoomTypedRequestHandler juniorSuiteRoom;
@@ -33,7 +36,13 @@ public class Hotel {
     public final static String priceMessage = "Thank You for staying with us! Your invoice is : ";
 
 
-    Hotel(int k, int m) {
+    Hotel(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra) {
+        Hotel.suiteInt = suiteInt;
+        Hotel.juniourInt = juniourInt;
+        Hotel.singleInt = singleInt;
+        Hotel.doubleInt = doubleInt;
+        Hotel.doubleWithExtra = doubleWithExtra;
+
         suiteRoom = new RoomTypedRequestHandler(Suite);
         juniorSuiteRoom = new RoomTypedRequestHandler(JuniorSuite);
         singleRoom = new RoomTypedRequestHandler(Single);
