@@ -2,8 +2,8 @@ package com.cmc;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,8 @@ public class RoomTypedRequestHandler {
     @Getter
     private ArrayList<BookingInfo> bookInfoList;
 
-    private ArrayList<BookingInfo> guestInformation;
+    @Getter
+    private ArrayList<CheckInInfo> guestInformation = new ArrayList<>();
 
     private boolean isFree;
     private boolean isBooked;
@@ -40,7 +41,7 @@ public class RoomTypedRequestHandler {
         this.bookInfoList = new ArrayList<>();
     }
 
-    public DayHotelInfo checkByDate(LocalDate today ) {
+    public DayHotelInfo checkByDate(LocalDate today) {
         DayHotelInfo dayHotelInfo = new DayHotelInfo();
         long bookedRooms = bookInfoList.stream().filter(x -> x.checkToday(today)).count();
         dayHotelInfo.setBookedRooms(Math.toIntExact(bookedRooms));
@@ -48,12 +49,14 @@ public class RoomTypedRequestHandler {
         dayHotelInfo.setFreeRooms(0);
         return dayHotelInfo;
     }
+
     public void addToBookInfoList(BookingInfo info) {
         bookInfoList.add(info);
     }
 
-    public void addToGuestInformation(BookingInfo info) {
-        guestInformation.add(info);
+    public void addToGuestInformation(BookingInfo info, int roomNumber, double price) {
+        CheckInInfo checkInInfo = new CheckInInfo(price, roomNumber, info);
+        guestInformation.add(checkInInfo);
     }
 
     public void removeFromGuestInformation(BookingInfo info) {
@@ -91,13 +94,41 @@ public class RoomTypedRequestHandler {
                 .findFirst();
         if (anyMatchInfo.isPresent()) {
             BookingInfo newInfo = anyMatchInfo.get();
+            LocalDate from = newInfo.getFrom();
+            LocalDate to = newInfo.getTo();
             if (!newInfo.isPayed()) {
                 newInfo.setPayed(pay);
             }
-            addToGuestInformation(newInfo);
-            return newInfo.isDiscount() ? getPrice() * discount : getPrice();
+            int firstRoomOfThisType = getFirstRoomOfThisType();
+            int lastRoomOfThisType = getLastRoomOfThisType();
+            Integer roomNumber = guestInformation.stream()
+                    .filter(x -> x.checkIntersection(from, to))
+                    .map(CheckInInfo::getRoomNumber)
+                    .reduce(firstRoomOfThisType, (x, y) -> x.equals(y) ? x++ : x);
+            if (roomNumber > lastRoomOfThisType) {
+                throw new CheckInException("system mistake???", type);
+            }
+            double price = newInfo.isDiscount() ? getPrice() * discount : getPrice();
+            addToGuestInformation(newInfo, roomNumber, price);
+            return price;
         }
         throw new CheckInException(noBookingMessage, type);
     }
 
+    public List<Double> checkInToday(LocalDate currentTime) {
+        boolean pay = true;
+        List<Double> checkInTodayList = bookInfoList.stream()
+                .filter(x -> x.isBookingToday(currentTime))
+                .map(x -> {
+                    try {
+                        return this.checkIn(x, pay);
+                    } catch (CheckInException e) {
+                        System.err.println("hotel system error");
+                    }
+                    return 0.0;
+                })
+                .filter(x -> x != 0)
+                .collect(Collectors.toList());
+        return checkInTodayList;
+    }
 }

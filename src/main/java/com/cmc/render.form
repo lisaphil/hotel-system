@@ -43,7 +43,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="cae9c" class="javax.swing.JTable" binding="table2" default-binding="true">
+              <component id="cae9c" class="javax.swing.JTable" binding="tableCheckIn">
                 <constraints/>
                 <properties>
                   <gridColor color="-16777216"/>

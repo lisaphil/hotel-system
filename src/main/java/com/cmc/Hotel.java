@@ -5,10 +5,13 @@ import com.cmc.exceptions.CheckInException;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.cmc.RoomType.*;
 import static com.cmc.RoomTypedRequestHandler.*;
+import static java.util.stream.Collectors.toList;
 
 public class Hotel {
     public static int k;
@@ -20,6 +23,8 @@ public class Hotel {
     private RoomTypedRequestHandler singleRoom;
     private RoomTypedRequestHandler doubleRoom;
     private RoomTypedRequestHandler doubleExtraBedRoom;
+
+    //List<Integer> uniqueIds = (new Random()).ints(1, 10000).distinct().boxed().collect(toList());
 
     @Getter
     private ImmutableList<RoomTypedRequestHandler> handlers;
@@ -40,6 +45,7 @@ public class Hotel {
 
     //TODO test
     public RoomType book(RoomType roomType, BookingInfo info) throws BookingException {
+        //info.setUniqueId(0);
         boolean bookingResult = handlers.stream()
                 .filter(x -> x.getType().equals(roomType))
                 .findFirst()
@@ -54,6 +60,12 @@ public class Hotel {
         }
         return roomType;
     }
+
+    /*private int generateUniqueId() {
+        int result = uniqueIds.get(0);
+        uniqueIds.remove(0);
+        return result;
+    }*/
 
     //TODO test
     public RoomType checkIn(RoomType roomType, BookingInfo info, boolean pay) throws CheckInException {
@@ -80,8 +92,7 @@ public class Hotel {
         } catch (BookingException e) {
             throw new CheckInException(fullHotelMessage, roomType);
         } catch (CheckInException e) {
-            e.printStackTrace();
-            return null;
+            throw new CheckInException("something got wrong! sorry!", roomType);
         }
     }
 
@@ -113,4 +124,10 @@ public class Hotel {
         return null;
     }
 
+    public List<java.lang.Double> checkInAllNow(LocalDate currentTime) {
+        return handlers.stream()
+                .map(x -> x.checkInToday(currentTime))
+                .flatMap(Collection::stream)
+                .collect(toList());
+    }
 }

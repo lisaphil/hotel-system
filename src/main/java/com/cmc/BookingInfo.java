@@ -5,20 +5,16 @@ import lombok.Data;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.*;
 
 @Data
 public class BookingInfo {
-    //private int roomNumber;
-    private boolean discount;
-    private boolean isPayed;
-    private LocalDate from;
-    private LocalDate to;
-    private String name;
+    //protected int uniqueId;
+    protected boolean discount;
+    protected boolean isPayed;
+    protected LocalDate from;
+    protected LocalDate to;
+    protected String name;
 
     public BookingInfo(LocalDate from, LocalDate to, String name, boolean isPayed) {
         this.isPayed = isPayed;
@@ -35,6 +31,14 @@ public class BookingInfo {
         this.name = name;
     }
 
+    protected BookingInfo(BookingInfo info) {
+        this.isPayed = info.isPayed;
+        this.discount = info.discount;
+        this.from = info.from;
+        this.to = info.to;
+        this.name = info.name;
+    }
+
     public List<String> getBookInfo() {
         return Lists.newArrayList( String.valueOf(discount), String.valueOf(isPayed), from.toString(), to.toString(), name);
     }
@@ -48,5 +52,9 @@ public class BookingInfo {
 
     public boolean checkToday(LocalDate today) {
         return from.isBefore(today) && to.isAfter(today);
+    }
+
+    public boolean isBookingToday(LocalDate currentTime) {
+        return from.isEqual(currentTime);
     }
 }

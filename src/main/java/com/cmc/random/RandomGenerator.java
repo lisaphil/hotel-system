@@ -20,6 +20,12 @@ public class RandomGenerator {
     private Random randomDate;
     private Random randomName;
     private Random randomRoom;
+    private Random randomAction;
+
+    public enum ActionType {
+        CheckIn,
+        Book;
+    }
 
 
     private final ImmutableList<String> names = ImmutableList.of("Алина", "Анастасия", "Анжела", "Анна", "Валерия", "Вероника", "Виктория", "Дарья", "Евгения", "Екатерина", "Елена",
@@ -32,8 +38,13 @@ public class RandomGenerator {
         this.randomDate = new Random(3); //TODO
         this.randomName = new Random(5);
         this.randomRoom = new Random(7);
+        this.randomAction = new Random(9);
         this.startDate = startDate;
         this.finishDate = finishDate;
+    }
+
+    public ActionType generateEvent() {
+        return randomAction.nextBoolean() ? ActionType.Book : ActionType.CheckIn;
     }
 
     public BookingInfo generateBookInfo(LocalDate currentTime) {

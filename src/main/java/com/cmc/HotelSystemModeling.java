@@ -1,16 +1,15 @@
 package com.cmc;
 
 import com.cmc.exceptions.BookingException;
+import com.cmc.exceptions.CheckInException;
 import com.cmc.random.RandomGenerator;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.concurrent.TimeUnit;
-
-import static com.cmc.RoomType.Suite;
+import java.util.Collection;
+import java.util.List;
 
 public class HotelSystemModeling implements Runnable{
     private int lengthInDays;
@@ -59,18 +58,34 @@ public class HotelSystemModeling implements Runnable{
         currentTime = startDate.atStartOfDay();
         randomGenerator = new RandomGenerator(startDate, finishDate);
         while (currentTime.isBefore(finishDate.atStartOfDay())) {
-            BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime.toLocalDate());
+            LocalDate currentTime = this.currentTime.toLocalDate();
+            BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime);
             RoomType roomType = randomGenerator.generateRoomType();
             try {
-                Thread.sleep(30);
-                hotelSystem.book(roomType, bookingInfo);
+                Thread.sleep(50);
+                performEvent(roomType, bookingInfo, currentTime);
             } catch (BookingException e) {
                 e.getMessage(); // log this?
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (CheckInException e) {
+                e.getMessage(); // log this?
             }
             next();
         }
         finish = true;
+    }
+
+    private void performEvent(RoomType roomType, BookingInfo bookingInfo, LocalDate currentTime) throws BookingException, CheckInException {
+        List<Double> doubles = hotelSystem.checkInAllNow(currentTime);
+        RandomGenerator.ActionType actionType = randomGenerator.generateEvent();
+        boolean pay = true; //TODO
+        switch (actionType) {
+            case CheckIn:
+                //hotelSystem.checkIn(roomType, bookingInfo, pay);
+                break;
+            case Book:
+                hotelSystem.book(roomType, bookingInfo);
+        }
     }
 }

@@ -2,23 +2,16 @@ package com.cmc;
 
 import com.cmc.exceptions.WrongInputException;
 import com.google.common.collect.ImmutableList;
-import org.javatuples.Pair;
 
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +32,7 @@ public class render extends JDialog implements ActionListener {
     private JButton checkButton;
     private JLabel label;
     private JTable tableBook;
-    private JTable table2;
+    private JTable tableCheckIn;
     private int numberOfDays;
     private int numberOfRooms;
     private boolean correctInput = false;
@@ -48,8 +41,12 @@ public class render extends JDialog implements ActionListener {
     private final Timer timer = new Timer(1000, this);
     private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
     private DefaultTableModel tableBookModel;
-    private static Object[] columnsHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+    private DefaultTableModel tableCheckInModel;
+    private static Object[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+    private static Object[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
+    private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
 
     public render() {
         setContentPane(contentPane);
@@ -60,7 +57,10 @@ public class render extends JDialog implements ActionListener {
         buttonOK.addActionListener(getStartButtonListener());
 
         getBookjTable();
+        getCheckInjTable();
+
         tableBook.setModel(tableBookModel);
+        tableCheckIn.setModel(tableCheckInModel);
 
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -83,6 +83,7 @@ public class render extends JDialog implements ActionListener {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         checkButton.addActionListener(getCheckButtonListener());
     }
+
 
     private ActionListener getStartButtonListener() {
         return e -> {
@@ -171,9 +172,9 @@ public class render extends JDialog implements ActionListener {
         scrollPane1.setViewportView(tableBook);
         final JScrollPane scrollPane2 = new JScrollPane();
         panel1.add(scrollPane2, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        table2 = new JTable();
-        table2.setGridColor(new Color(-16777216));
-        scrollPane2.setViewportView(table2);
+        tableCheckIn = new JTable();
+        tableCheckIn.setGridColor(new Color(-16777216));
+        scrollPane2.setViewportView(tableCheckIn);
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel2, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, 1, 1, null, null, null, 0, false));
@@ -209,19 +210,25 @@ public class render extends JDialog implements ActionListener {
         return contentPane;
     }
 
-    private TableModel getBookjTable() {
-
+    private void getBookjTable() {
         tableBookModel = new DefaultTableModel();
-        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsHeader));
+        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsBookHeader));
         columnHeaderList.add("room type");
         tableBookModel.setColumnIdentifiers(columnHeaderList.toArray());
-        tableBookModel.addRow(Stream.of(columnsHeader).map(x -> "tt").toArray(String[]::new));
-        //tableBookModel.addRow(getRow());
-        return tableBookModel;
+        tableBookModel.addRow(Stream.of(columnsBookHeader).map(x -> "tt").toArray(String[]::new));
     }
 
-    public java.util.List<java.util.List<String>> getRows() {
+    private void getCheckInjTable() {
+        tableCheckInModel = new DefaultTableModel();
+        java.util.List<Object> checkInHeaders = new ArrayList<>(Arrays.asList(columnsCheckInHeader));
+        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsBookHeader));
+        columnHeaderList.addAll(checkInHeaders);
+        columnHeaderList.add("room type");
+        tableCheckInModel.setColumnIdentifiers(columnHeaderList.toArray());
+    }
 
+
+    public java.util.List<java.util.List<String>> getNewBookRows() {
         java.util.List<java.util.List<String>> newBookInfos = roomActionHandlers.stream()
                 .map(x -> x.getBookInfoList().stream().map(y -> {
                     java.util.List<String> bookInfo = y.getBookInfo();
@@ -233,13 +240,32 @@ public class render extends JDialog implements ActionListener {
         java.util.List<java.util.List<String>> difference = newBookInfos.stream().filter(x -> !bookingInfos.contains(x)).collect(Collectors.toList());
         bookingInfos = newBookInfos;
         return difference;
-        //.toArray(String[]::new);
+    }
+
+    public java.util.List<java.util.List<String>> getCheckInBookRows() {
+        java.util.List<java.util.List<String>> newCheckInInfos = roomActionHandlers.stream()
+                .map(x ->
+                        x.getGuestInformation().stream()
+                        .map(y -> {
+                            java.util.List<String> checkInInfo = y.getCheckInInfo();
+                            checkInInfo.add(x.getType().getName());
+                            return checkInInfo;
+                        })
+                        .collect(toList()))
+                .flatMap(Collection::stream)
+                .collect(toList());
+        java.util.List<java.util.List<String>> difference = newCheckInInfos.stream().filter(x -> !checkInInfos.contains(x)).collect(Collectors.toList());
+        checkInInfos = newCheckInInfos;
+        return difference;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (java.util.List<String> info : getRows()) {
+        for (java.util.List<String> info : getNewBookRows()) {
             tableBookModel.addRow(info.toArray());
+        }
+        for (java.util.List<String> info : getCheckInBookRows()) {
+            tableCheckInModel.addRow(info.toArray());
         }
     }
 
