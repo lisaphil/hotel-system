@@ -9,7 +9,7 @@ import java.util.*;
 
 @Data
 public class BookingInfo {
-    //protected int uniqueId;
+    protected int uniqueId;
     protected boolean discount;
     protected boolean isPayed;
     protected LocalDate from;
@@ -32,6 +32,7 @@ public class BookingInfo {
     }
 
     protected BookingInfo(BookingInfo info) {
+        this.uniqueId = info.uniqueId;
         this.isPayed = info.isPayed;
         this.discount = info.discount;
         this.from = info.from;
@@ -40,7 +41,7 @@ public class BookingInfo {
     }
 
     public List<String> getBookInfo() {
-        return Lists.newArrayList( String.valueOf(discount), String.valueOf(isPayed), from.toString(), to.toString(), name);
+        return Lists.newArrayList( String.valueOf(uniqueId), String.valueOf(discount), String.valueOf(isPayed), from.toString(), to.toString(), name);
     }
     public boolean checkDate(LocalDate from, LocalDate to) {
         return this.to.isBefore(from) || to.isBefore(this.from);

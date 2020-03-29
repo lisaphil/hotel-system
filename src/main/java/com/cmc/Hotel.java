@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class Hotel {
 
     //TODO test
     public RoomType book(RoomType roomType, BookingInfo info) throws BookingException {
-        //info.setUniqueId(0);
+        info.setUniqueId(generateUniqueId());
         boolean bookingResult = handlers.stream()
                 .filter(x -> x.getType().equals(roomType))
                 .findFirst()
@@ -61,11 +62,10 @@ public class Hotel {
         return roomType;
     }
 
-    /*private int generateUniqueId() {
-        int result = uniqueIds.get(0);
-        uniqueIds.remove(0);
-        return result;
-    }*/
+    private int generateUniqueId() {
+        LocalDateTime today = LocalDateTime.now();
+        return today.getHour() + today.getMinute() + today.getSecond() + today.getDayOfYear() + today.getNano();
+    }
 
     //TODO test
     public RoomType checkIn(RoomType roomType, BookingInfo info, boolean pay) throws CheckInException {
@@ -121,7 +121,7 @@ public class Hotel {
             double sum = bookingInfo.isDiscount() ? price * discount : price;
             return priceMessage + sum;
         }
-        return null;
+        return "";
     }
 
     public List<java.lang.Double> checkInAllNow(LocalDate currentTime) {

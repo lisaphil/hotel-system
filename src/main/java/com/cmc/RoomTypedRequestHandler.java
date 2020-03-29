@@ -3,6 +3,7 @@ package com.cmc;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.cmc.exceptions.CheckInException;
 import lombok.Getter;
@@ -78,7 +79,9 @@ public class RoomTypedRequestHandler {
     boolean book(BookingInfo info) {
         LocalDate from = info.getFrom();
         LocalDate to = info.getTo();
-        boolean result = bookInfoList.stream().filter(x -> x.checkIntersection(from, to)).count() < roomsNumber;
+        long bookedRooms = bookInfoList.stream().filter(x -> x.checkIntersection(from, to)).count();
+        long checkedInRooms = guestInformation.stream().filter(x -> x.checkIntersection(from, to)).count();
+        boolean result = (bookedRooms + checkedInRooms) < roomsNumber;
         if (result) {
             addToBookInfoList(info);
         }
@@ -104,11 +107,12 @@ public class RoomTypedRequestHandler {
             Integer roomNumber = guestInformation.stream()
                     .filter(x -> x.checkIntersection(from, to))
                     .map(CheckInInfo::getRoomNumber)
-                    .reduce(firstRoomOfThisType, (x, y) -> x.equals(y) ? x++ : x);
+                    .reduce(firstRoomOfThisType, (x, y) -> x==y ? ++x : x);
             if (roomNumber > lastRoomOfThisType) {
                 throw new CheckInException("system mistake???", type);
             }
             double price = newInfo.isDiscount() ? getPrice() * discount : getPrice();
+            bookInfoList.removeIf(x -> x.uniqueId == info.uniqueId);
             addToGuestInformation(newInfo, roomNumber, price);
             return price;
         }
@@ -117,18 +121,20 @@ public class RoomTypedRequestHandler {
 
     public List<Double> checkInToday(LocalDate currentTime) {
         boolean pay = true;
-        List<Double> checkInTodayList = bookInfoList.stream()
+        List<BookingInfo> bookingInfoList = bookInfoList.stream()
                 .filter(x -> x.isBookingToday(currentTime))
+                .collect(Collectors.toList());
+        return bookingInfoList.size() > 0 ? bookingInfoList.stream()
                 .map(x -> {
                     try {
                         return this.checkIn(x, pay);
                     } catch (CheckInException e) {
-                        System.err.println("hotel system error");
+                        System.err.println(e.getMessage());
                     }
                     return 0.0;
                 })
                 .filter(x -> x != 0)
-                .collect(Collectors.toList());
-        return checkInTodayList;
+                .collect(Collectors.toList())
+                : emptyList();
     }
 }
