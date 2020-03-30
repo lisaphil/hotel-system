@@ -5,7 +5,7 @@ import java.util.List;
 
 
 @Data
-public class DayHotelInfo {
+public class HotelInfo {
     private List<Integer> busyRooms;
     private int bookedRooms;
     private int freeRooms;

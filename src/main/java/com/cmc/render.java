@@ -53,6 +53,8 @@ public class render extends JDialog implements ActionListener {
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
 
+    private Statisctisc statistisc = new Statisctisc();
+
     public render() {
         setContentPane(contentPane);
         setModal(true);
@@ -82,10 +84,16 @@ public class render extends JDialog implements ActionListener {
 
     private void setMenu() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu statistics = new JMenu("Statistics");
+        JMenu statisticsMenuItem = new JMenu("Statistics");
         JMenuItem allRooms = new JMenuItem("All Rooms");
-        statistics.add(allRooms);
-        menuBar.add(statistics);
+        allRooms.addActionListener(e -> {
+            statistisc.getAll();
+            JOptionPane.showMessageDialog(render.this,
+                    "Использование изображения в окне сообщений",
+                    "Statistics", JOptionPane.INFORMATION_MESSAGE);
+        });
+        statisticsMenuItem.add(allRooms);
+        menuBar.add(statisticsMenuItem);
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
     }

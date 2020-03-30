@@ -3,7 +3,6 @@ package com.cmc;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.cmc.exceptions.CheckInException;
 import lombok.Getter;
@@ -39,8 +38,8 @@ public class RoomTypedRequestHandler {
         this.bookInfoList = new ArrayList<>();
     }
 
-    public DayHotelInfo checkByDate(LocalDate today) {
-        DayHotelInfo dayHotelInfo = new DayHotelInfo();
+    public HotelInfo checkByDate(LocalDate today) {
+        HotelInfo dayHotelInfo = new HotelInfo();
         long bookedRooms = bookInfoList.stream().filter(x -> x.checkToday(today)).count();
         dayHotelInfo.setBookedRooms(Math.toIntExact(bookedRooms));
         dayHotelInfo.setBusyRooms(emptyList());//TODO
