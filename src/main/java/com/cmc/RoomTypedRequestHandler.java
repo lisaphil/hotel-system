@@ -19,7 +19,7 @@ public class RoomTypedRequestHandler {
 
     @Getter
     private RoomType type;
-    @Getter
+    @Getter @Setter
     private int roomsNumber;
     @Setter
     private Map<Integer, List<BookingInfo>> bookingInformation = new HashMap<>();

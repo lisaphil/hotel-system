@@ -15,6 +15,7 @@ public class RoomTypedRequestHandlerTest extends TestCase {
     public void testBook() throws Exception {
         //Given
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
+        roomTypedRequestHandler.setRoomsNumber(5);
 
         //When
         LocalDate from = LocalDate.of(2014, Month.JUNE, 10);
@@ -33,6 +34,8 @@ public class RoomTypedRequestHandlerTest extends TestCase {
     public void testBookWithSeveralBooks() throws Exception {
         //Given
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
+        roomTypedRequestHandler.setRoomsNumber(5);
+
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
         BookingInfo sasha = new BookingInfo(fromSasha,
@@ -71,6 +74,8 @@ public class RoomTypedRequestHandlerTest extends TestCase {
     public void testBookWithSeveralBooksAnotherRoom() throws Exception {
         //Given
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
+        roomTypedRequestHandler.setRoomsNumber(5);
+
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
         BookingInfo sasha = new BookingInfo(fromSasha,
@@ -109,6 +114,8 @@ public class RoomTypedRequestHandlerTest extends TestCase {
     public void testBookAllFull() throws Exception {
         //Given
         RoomTypedRequestHandler roomTypedRequestHandler = new RoomTypedRequestHandler(RoomType.Suite);
+        roomTypedRequestHandler.setRoomsNumber(5);
+
         LocalDate fromSasha = LocalDate.of(2014, Month.JUNE, 10);
         LocalDate toSasha = LocalDate.of(2014, Month.JUNE, 17);
         BookingInfo sasha = new BookingInfo(fromSasha,
