@@ -5,6 +5,7 @@ import com.cmc.hotel.HotelSystemModeling;
 import com.cmc.info.BookingInfo;
 import com.cmc.info.CheckInInfo;
 import com.cmc.render.Tables;
+import com.cmc.statistics.AverageStatistics;
 import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
@@ -133,10 +134,10 @@ public class Render extends JDialog implements ActionListener {
                                 .stream()
                                 .filter(x -> type == null || x.getType() == type)
                                 .map(x -> {
-                                    Statistics statistics = x.getStatistics();
-                                    String avBusyness = String.format("<dd> <b>average busyness</b> is %f </dd>", statistics.getAvBusyness());
-                                    String maxBusyness = String.format("<dd> <b>max busyness</b> is %f in %s </dd>", statistics.getMaxBusyness(), statistics.getWhenMaxBusyness().toString());
-                                    String minBusyness = String.format("<dd> <b>min busyness</b> is %f in %s </dd>", statistics.getMinBusyness(), statistics.getWhenMinBusyness().toString());
+                                    AverageStatistics averageStatistics = x.getAverageStatistics();
+                                    String avBusyness = String.format("<dd> <b>average busyness</b> is %.2f%s</dd>", averageStatistics.getAvBusyness()*100, "%");
+                                    String maxBusyness = String.format("<dd> <b>max busyness</b> is %.2f%s in %s </dd>", averageStatistics.getMaxBusyness()*100,"%", averageStatistics.getWhenMaxBusyness().toString());
+                                    String minBusyness = String.format("<dd> <b>min busyness</b> is %.2f%s in %s </dd>", averageStatistics.getMinBusyness()*100, "%", averageStatistics.getWhenMinBusyness().toString());
                                     return "<dt>" + x.getType().toString() + "</dt>"
                                             + avBusyness + maxBusyness + minBusyness;
                                 })

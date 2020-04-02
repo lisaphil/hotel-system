@@ -4,12 +4,11 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.cmc.Statistics;
+import com.cmc.statistics.AverageStatistics;
 import com.cmc.exceptions.CheckInException;
 import com.cmc.info.BookingInfo;
 import com.cmc.info.CheckInInfo;
 import com.cmc.info.HotelInfo;
-import com.cmc.typed.RoomType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +22,7 @@ public class RoomTypedRequestHandler {
     public final static String noBookingMessage = "there is no booking";
 
     public final static double discount = 0.7;
-    private final Statistics statistics;
+    private final AverageStatistics averageStatistics;
 
     @Getter
     private RoomType type;
@@ -44,7 +43,7 @@ public class RoomTypedRequestHandler {
         this.type = type;
         this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1; // TODO
         this.bookInfoList = new ArrayList<>();
-        this.statistics = new Statistics(type);
+        this.averageStatistics = new AverageStatistics(type);
     }
 
     public HotelInfo checkByDate(LocalDate today) {
@@ -144,12 +143,12 @@ public class RoomTypedRequestHandler {
     }
 
     public Object log(LocalDate currentTime) {
-        return statistics.log(currentTime, guestInformation);
+        return averageStatistics.log(currentTime, guestInformation);
     }
 
-    public Statistics getStatistics() {
-        statistics.countFinal(guestInformation);
-        return statistics;
+    public AverageStatistics getAverageStatistics() {
+        averageStatistics.countFinal(guestInformation);
+        return averageStatistics;
     }
 
     public List<String> checkOutAllNow(LocalDate currentTime) {

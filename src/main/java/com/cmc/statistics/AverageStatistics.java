@@ -1,4 +1,4 @@
-package com.cmc;
+package com.cmc.statistics;
 
 import com.cmc.info.CheckInInfo;
 import com.cmc.info.HotelInfo;
@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Statistics {
+public class AverageStatistics {
     @Getter
     private RoomType room;
     private double busynessSum;
@@ -26,7 +26,7 @@ public class Statistics {
     @Getter
     private double avBusyness;
 
-    public Statistics(RoomType room) {
+    public AverageStatistics(RoomType room) {
         this.room = room;
         this.lastUpdate = LocalDate.now();
         this.roomsNumber = room.getTo() - room.getFrom() + 1;
@@ -57,7 +57,7 @@ public class Statistics {
         double busyness = (double)checkInInfoList.size() / roomsNumber;
         busynessSum += busyness;
         numberOfDays ++;
-        avBusyness = busyness/numberOfDays;
+        avBusyness = busynessSum/numberOfDays;
     }
 
 
