@@ -8,6 +8,7 @@ import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +28,8 @@ public class HotelSystemModeling implements Runnable {
     private RandomGenerator randomGenerator;
     @Getter
     private boolean finish;
+    @Setter
+    private int randomParam;
 
 
     private HotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
@@ -49,6 +52,7 @@ public class HotelSystemModeling implements Runnable {
 
 
     private void next() {
+        deltaHours = randomGenerator.generateDeltaHours();
         currentTime = currentTime.plusHours(deltaHours);
     }
 
@@ -57,7 +61,7 @@ public class HotelSystemModeling implements Runnable {
         startDate = LocalDate.now();
         finishDate = startDate.plusDays(lengthInDays);
         currentTime = startDate.atStartOfDay();
-        randomGenerator = new RandomGenerator(startDate, finishDate);
+        randomGenerator = new RandomGenerator(startDate, finishDate, randomParam);
         while (currentTime.isBefore(finishDate.atStartOfDay())) {
             LocalDate currentTime = this.currentTime.toLocalDate();
             BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime);

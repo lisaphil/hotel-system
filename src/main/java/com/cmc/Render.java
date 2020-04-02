@@ -49,6 +49,7 @@ public class Render extends JDialog implements ActionListener {
     private JSpinner singleSpinner;
     private JSpinner doubleSpinner;
     private JSpinner doubleExtraSpinner;
+    private JSpinner randomSpinner;
     private final static String newline = "\n";
     private HotelSystemModeling hotelSystemModeling;
     private final Timer timer = new Timer(1000, this);
@@ -386,7 +387,7 @@ public class Render extends JDialog implements ActionListener {
                 setInputToDefault();
                 hotelSystemModeling = createHotelSystemModelingWithDefaultArgs();
             }
-            //setSize(800, 600);
+            hotelSystemModeling.setRandomParam(Integer.parseInt(randomSpinner.getValue().toString()));
             Thread myThready = new Thread(hotelSystemModeling);    //Создание потока "myThready"
             myThready.start();
             timer.start();

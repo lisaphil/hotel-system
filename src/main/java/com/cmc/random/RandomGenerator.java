@@ -21,6 +21,12 @@ public class RandomGenerator {
     private Random randomName;
     private Random randomRoom;
     private Random randomAction;
+    private Random randomDelta;
+
+
+    public long generateDeltaHours() {
+        return randomDelta.nextInt(5);
+    }
 
     public enum ActionType {
         CheckIn,
@@ -34,11 +40,13 @@ public class RandomGenerator {
             "Николай", "Олег", "Семен", "Сергей", "Станислав"
     );
 
-    public RandomGenerator(LocalDate startDate, LocalDate finishDate) {
-        this.randomDate = new Random(3); //TODO
-        this.randomName = new Random(5);
-        this.randomRoom = new Random(7);
-        this.randomAction = new Random(9);
+    public RandomGenerator(LocalDate startDate, LocalDate finishDate, int param) {
+        Random random = new Random(param);
+        this.randomDate = new Random(random.nextInt());
+        this.randomName = new Random(random.nextInt());
+        this.randomRoom = new Random(random.nextInt());
+        this.randomAction = new Random(random.nextInt());
+        this.randomDelta = new Random(random.nextInt());
         this.startDate = startDate;
         this.finishDate = finishDate;
     }
@@ -61,9 +69,12 @@ public class RandomGenerator {
         return roomTypes.get(randomIndex);
     }
     public Pair<LocalDate, LocalDate> generateDate(LocalDate currentTime) {
-        int days = (int) Duration.between(currentTime.atStartOfDay(), finishDate.atStartOfDay()).toDays();
+        int days = (int) Duration.between(currentTime.atStartOfDay(), finishDate.atStartOfDay()).toDays() + 1;
         int firstRandom = randomDate.nextInt(days );
         int secondRandom = randomDate.nextInt(days);
+        while (firstRandom == secondRandom && days!=0) {
+            secondRandom = randomDate.nextInt(days);
+        }
         int min = min(firstRandom, secondRandom);
         int max = max(firstRandom, secondRandom);
         LocalDate from = currentTime.plusDays(min);
