@@ -1,10 +1,15 @@
-package com.cmc;
+package com.cmc.typed;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.cmc.Statistics;
 import com.cmc.exceptions.CheckInException;
+import com.cmc.info.BookingInfo;
+import com.cmc.info.CheckInInfo;
+import com.cmc.info.HotelInfo;
+import com.cmc.typed.RoomType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,7 +67,7 @@ public class RoomTypedRequestHandler {
         guestInformation.removeIf(x -> x.equals(info));//TODO
     }
 
-    int getPrice() {
+    public int getPrice() {
         return type.getPrice();
     }
 
@@ -74,7 +79,7 @@ public class RoomTypedRequestHandler {
         return type.getTo();
     }
 
-    boolean book(BookingInfo info) {
+    public boolean book(BookingInfo info) {
         LocalDate from = info.getFrom();
         LocalDate to = info.getTo();
         long bookedRooms = bookInfoList.stream().filter(x -> x.checkIntersection(from, to)).count();
@@ -86,7 +91,7 @@ public class RoomTypedRequestHandler {
         return result;
     }
 
-    double checkIn(BookingInfo info, boolean pay) throws CheckInException {
+    public double checkIn(BookingInfo info, boolean pay) throws CheckInException {
         Optional<BookingInfo> anyMatchInfo = bookInfoList.stream()
                 .filter(x ->
                         x.getName().equalsIgnoreCase(info.getName())
@@ -110,7 +115,7 @@ public class RoomTypedRequestHandler {
                 throw new CheckInException("system mistake???", type);
             }
             double price = newInfo.isDiscount() ? getPrice() * discount : getPrice();
-            bookInfoList.removeIf(x -> x.uniqueId == info.uniqueId);
+            bookInfoList.removeIf(x -> x.getUniqueId() == info.getUniqueId());
             addToGuestInformation(newInfo, roomNumber, price);
             return price;
         }

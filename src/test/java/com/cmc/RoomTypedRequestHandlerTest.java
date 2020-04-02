@@ -1,13 +1,14 @@
 package com.cmc;
 
+import com.cmc.info.BookingInfo;
+import com.cmc.typed.RoomType;
+import com.cmc.typed.RoomTypedRequestHandler;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
-
-import static com.cmc.RoomTypedRequestHandler.fullBookingMessage;
 
 public class RoomTypedRequestHandlerTest extends TestCase {
 

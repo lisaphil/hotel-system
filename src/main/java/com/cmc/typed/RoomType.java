@@ -1,11 +1,10 @@
-package com.cmc;
+package com.cmc.typed;
 
 import lombok.Getter;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
-import static com.cmc.Hotel.*;
+import static com.cmc.hotel.Hotel.*;
 
 public enum RoomType {
     Suite(400, 1, suiteInt - 1, "Suite"),

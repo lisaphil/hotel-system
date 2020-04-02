@@ -1,6 +1,12 @@
 package com.cmc;
 
 import com.cmc.exceptions.WrongInputException;
+import com.cmc.hotel.HotelSystemModeling;
+import com.cmc.info.BookingInfo;
+import com.cmc.info.CheckInInfo;
+import com.cmc.render.Tables;
+import com.cmc.typed.RoomType;
+import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
 
 
@@ -15,17 +21,18 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cmc.HotelSystemModeling.createHotelSystemModeling;
-import static com.cmc.HotelSystemModeling.createHotelSystemModelingWithDefaultArgs;
+import static com.cmc.hotel.HotelSystemModeling.createHotelSystemModeling;
+import static com.cmc.hotel.HotelSystemModeling.createHotelSystemModelingWithDefaultArgs;
 import static com.cmc.exceptions.ArgumentType.DaysNumber;
 import static com.cmc.exceptions.ArgumentType.RoomNumber;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-public class render extends JDialog implements ActionListener {
+public class Render extends JDialog implements ActionListener {
     public static final String successMessage = "success!!!!!!";
     public static final String tryAgainMessage = "Incorrect input";
     public static final String wrongParams = "%s are wrong";
+    private final Tables tables;
 
 
     private JPanel contentPane;
@@ -47,14 +54,14 @@ public class render extends JDialog implements ActionListener {
     private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
     private DefaultTableModel tableBookModel;
     private DefaultTableModel tableCheckInModel;
-    private static Object[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+      private static Object[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
     private static Object[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).map(Field::getName).toArray();
 
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
 
 
-    public render() {
+    public Render() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -62,8 +69,10 @@ public class render extends JDialog implements ActionListener {
         buttonOK.addActionListener(getStartButtonListener());
         setMenu();
 
-        getBookjTable();
-        getCheckInjTable();
+        this.tables = new Tables();
+
+        tableBookModel = tables.getBookjTable();
+        tableCheckInModel = tables.getCheckInjTable();
         tableBook.setModel(tableBookModel);
         tableCheckIn.setModel(tableCheckInModel);
 
@@ -106,11 +115,11 @@ public class render extends JDialog implements ActionListener {
     private ActionListener getSatisticsActionListener(RoomType type) {
         return e -> {
             if (hotelSystemModeling == null) {
-                JOptionPane.showMessageDialog(render.this,
+                JOptionPane.showMessageDialog(Render.this,
                         "Not started! Sorry(",
                         "Statistics", JOptionPane.WARNING_MESSAGE);
             } else if (!hotelSystemModeling.isFinish()) {
-                JOptionPane.showMessageDialog(render.this,
+                JOptionPane.showMessageDialog(Render.this,
                         "Not finished! Sorry(",
                         "Statistics", JOptionPane.WARNING_MESSAGE);
             } else {
@@ -120,7 +129,7 @@ public class render extends JDialog implements ActionListener {
                                 .filter(x -> type == null || x.getType() == type)
                                 .map(x -> x.getType().toString() + " " + x.getStatistics().getAvBusyness())
                                 .collect(toList());
-                JOptionPane.showMessageDialog(render.this,
+                JOptionPane.showMessageDialog(Render.this,
                         collect.toString(),
                         "Statistics", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -134,7 +143,7 @@ public class render extends JDialog implements ActionListener {
     }
 
     public static void main(String[] args) {
-        render dialog = new render();
+        Render dialog = new Render();
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);
@@ -269,24 +278,6 @@ public class render extends JDialog implements ActionListener {
         return contentPane;
     }
 
-    private void getBookjTable() {
-        tableBookModel = new DefaultTableModel();
-        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsBookHeader));
-        columnHeaderList.add("room type");
-        tableBookModel.setColumnIdentifiers(columnHeaderList.toArray());
-        tableBookModel.addRow(Stream.of(columnsBookHeader).map(x -> "tt").toArray(String[]::new));
-    }
-
-    private void getCheckInjTable() {
-        tableCheckInModel = new DefaultTableModel();
-        java.util.List<Object> checkInHeaders = new ArrayList<>(Arrays.asList(columnsCheckInHeader));
-        java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsBookHeader));
-        columnHeaderList.addAll(checkInHeaders);
-        columnHeaderList.add("room type");
-        tableCheckInModel.setColumnIdentifiers(columnHeaderList.toArray());
-    }
-
-
     public java.util.List<java.util.List<String>> getNewBookRows() {
         java.util.List<java.util.List<String>> newBookInfos = roomActionHandlers.stream()
                 .map(x -> x.getBookInfoList().stream().map(y -> {
@@ -372,11 +363,11 @@ public class render extends JDialog implements ActionListener {
         int numberOfDays = Integer.parseInt(numberOfDaysStr);
         DaysNumber.check(numberOfDays);
         strings.remove(0);
-        int numberOfRooms = strings.stream().map(x -> Integer.parseInt(x)).reduce(0, Integer::sum);
+        int numberOfRooms = strings.stream().map(Integer::parseInt).reduce(0, Integer::sum);
         RoomNumber.check(numberOfRooms);
         label.setText(successMessage);
         strings.add(0, numberOfDaysStr);
-        return strings.stream().map(x -> Integer.parseInt(x)).collect(toList());
+        return strings.stream().map(Integer::parseInt).collect(toList());
     }
 
     private void setInputToDefault() {

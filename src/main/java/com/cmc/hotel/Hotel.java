@@ -1,7 +1,10 @@
-package com.cmc;
+package com.cmc.hotel;
 
 import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
+import com.cmc.info.BookingInfo;
+import com.cmc.typed.RoomType;
+import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
@@ -10,8 +13,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.cmc.RoomType.*;
-import static com.cmc.RoomTypedRequestHandler.*;
+import static com.cmc.typed.RoomType.*;
+import static com.cmc.typed.RoomTypedRequestHandler.*;
 import static java.util.stream.Collectors.toList;
 
 public class Hotel {

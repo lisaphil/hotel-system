@@ -1,7 +1,8 @@
 package com.cmc;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.cmc.info.CheckInInfo;
+import com.cmc.info.HotelInfo;
+import com.cmc.typed.RoomType;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public class Statistics {
     @Getter
     private double avBusyness;
 
-    Statistics(RoomType room) {
+    public Statistics(RoomType room) {
         this.room = room;
         this.lastUpdate = LocalDate.now();
         this.roomsNumber = room.getTo() - room.getFrom() + 1;

@@ -1,4 +1,4 @@
-package com.cmc;
+package com.cmc.info;
 import lombok.Data;
 
 import java.util.List;

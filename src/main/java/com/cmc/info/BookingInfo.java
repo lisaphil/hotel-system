@@ -1,8 +1,7 @@
-package com.cmc;
+package com.cmc.info;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.*;

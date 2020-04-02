@@ -1,6 +1,6 @@
 package com.cmc.exceptions;
 
-import com.cmc.RoomType;
+import com.cmc.typed.RoomType;
 import lombok.Getter;
 
 public class CheckInException extends Exception{

@@ -1,7 +1,7 @@
 package com.cmc.random;
 
-import com.cmc.BookingInfo;
-import com.cmc.RoomType;
+import com.cmc.info.BookingInfo;
+import com.cmc.typed.RoomType;
 import com.google.common.collect.ImmutableList;
 import org.javatuples.Pair;
 

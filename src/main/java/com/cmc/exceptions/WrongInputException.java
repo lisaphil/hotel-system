@@ -1,6 +1,5 @@
 package com.cmc.exceptions;
 
-import com.cmc.RoomType;
 import lombok.Getter;
 
 public class WrongInputException extends Exception{

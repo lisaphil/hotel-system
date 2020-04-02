@@ -1,8 +1,11 @@
-package com.cmc;
+package com.cmc.hotel;
 
 import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
+import com.cmc.info.BookingInfo;
 import com.cmc.random.RandomGenerator;
+import com.cmc.typed.RoomType;
+import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
