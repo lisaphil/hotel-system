@@ -29,8 +29,17 @@ public class RandomGenerator {
     }
 
     public enum ActionType {
-        CheckIn,
-        Book;
+        CheckIn("Check In"),
+        Book("Book");
+
+        private String name;
+
+        ActionType(String s) {
+            name = s;
+        }
+        public String getName() {
+            return name;
+        }
     }
 
 

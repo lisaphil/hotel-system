@@ -4,6 +4,7 @@ import com.cmc.exceptions.WrongInputException;
 import com.cmc.hotel.HotelSystemModeling;
 import com.cmc.info.BookingInfo;
 import com.cmc.info.CheckInInfo;
+import com.cmc.random.RandomGenerator;
 import com.cmc.render.Tables;
 import com.cmc.statistics.AverageStatistics;
 import com.cmc.typed.RoomType;
@@ -99,26 +100,57 @@ public class Render extends JDialog implements ActionListener {
     private void setMenu() {
         JMenuBar menuBar = new JMenuBar();
         JMenu statisticsMenuItem = new JMenu("Statistics");
+        JMenuItem busyness = new JMenu("Busyness");
+        JMenuItem handledRequests = new JMenu("Handled Requests");
+
         JMenuItem allRooms = new JMenuItem("All Rooms");
+        statisticsMenuItem.add(busyness);
+        statisticsMenuItem.add(handledRequests);
+        new ArrayList<>(Arrays.asList(RandomGenerator.ActionType.values())).stream()
+                .map(x -> {
+                    JMenuItem menuItem = new JMenuItem(x.getName());
+                    menuItem.addActionListener(getHandledRequestsStatisticsActionListener(x));
+                    busyness.add(menuItem);
+                    return menuItem;
+                }).collect(Collectors.toList());
 
         JMenuItem suite = new JMenuItem(RoomType.Suite.getName());
-        allRooms.addActionListener(getSatisticsActionListener(null));
-        suite.addActionListener(getSatisticsActionListener(RoomType.Suite));
+        allRooms.addActionListener(getBusynessStatisticsActionListener(null));
+        suite.addActionListener(getBusynessStatisticsActionListener(RoomType.Suite));
         java.util.List<JMenuItem> menuItems = new ArrayList<>(Arrays.asList(RoomType.values()))
                 .stream()
                 .map(x -> {
                     JMenuItem menuItem = new JMenuItem(x.getName());
-                    menuItem.addActionListener(getSatisticsActionListener(x));
-                    statisticsMenuItem.add(menuItem);
+                    menuItem.addActionListener(getBusynessStatisticsActionListener(x));
+                    busyness.add(menuItem);
                     return menuItem;
                 }).collect(toList());
         menuBar.add(statisticsMenuItem);
-        statisticsMenuItem.add(allRooms);
+        busyness.add(allRooms);
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
     }
+    private ActionListener getHandledRequestsStatisticsActionListener(RandomGenerator.ActionType type) {
+        return e -> {
+            if (hotelSystemModeling == null) {
+                JOptionPane.showMessageDialog(Render.this,
+                        "Not started! Sorry(",
+                        "Statistics", JOptionPane.WARNING_MESSAGE);
+            } else if (!hotelSystemModeling.isFinish()) {
+                JOptionPane.showMessageDialog(Render.this,
+                        "Not finished! Sorry(",
+                        "Statistics", JOptionPane.WARNING_MESSAGE);
+            } else {
 
-    private ActionListener getSatisticsActionListener(RoomType type) {
+                String format = String.format("%s handled request:%.2f%s", type.getName(), hotelSystemModeling.getRequestsStatistics(type), "%");
+                JOptionPane.showMessageDialog(Render.this,
+                        "<html>"+ format + "</html>",
+                        "Statistics", JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
+    }
+
+    private ActionListener getBusynessStatisticsActionListener(RoomType type) {
         return e -> {
             if (hotelSystemModeling == null) {
                 JOptionPane.showMessageDialog(Render.this,

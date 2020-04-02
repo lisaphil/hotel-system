@@ -59,7 +59,4 @@ public class AverageStatistics {
         numberOfDays ++;
         avBusyness = busynessSum/numberOfDays;
     }
-
-
-
 }

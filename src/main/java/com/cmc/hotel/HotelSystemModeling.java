@@ -4,6 +4,7 @@ import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
 import com.cmc.info.BookingInfo;
 import com.cmc.random.RandomGenerator;
+import com.cmc.statistics.RequestsStatistics;
 import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
 import com.google.common.collect.ImmutableList;
@@ -30,6 +31,7 @@ public class HotelSystemModeling implements Runnable {
     private boolean finish;
     @Setter
     private int randomParam;
+    private RequestsStatistics requestsStatistics;
 
 
     private HotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
@@ -58,6 +60,7 @@ public class HotelSystemModeling implements Runnable {
 
     @Override
     public void run() {
+        requestsStatistics = new RequestsStatistics();
         startDate = LocalDate.now();
         finishDate = startDate.plusDays(lengthInDays);
         currentTime = startDate.atStartOfDay();
@@ -70,11 +73,13 @@ public class HotelSystemModeling implements Runnable {
                 Thread.sleep(66);
                 performEvent(roomType, bookingInfo, currentTime);
             } catch (BookingException e) {
-                e.getMessage(); // log this?
+                System.out.println(e.getMessage());
+                requestsStatistics.log(e);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (CheckInException e) {
-                e.getMessage(); // log this?
+                System.out.println(e.getMessage());
+                requestsStatistics.log(e);
             }
             next();
         }
@@ -94,5 +99,10 @@ public class HotelSystemModeling implements Runnable {
             case Book:
                 hotelSystem.book(roomType, bookingInfo);
         }
+        requestsStatistics.log(actionType);
+    }
+
+    public double getRequestsStatistics(RandomGenerator.ActionType actionType) {
+        return requestsStatistics.get(actionType);
     }
 }

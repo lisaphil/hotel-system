@@ -124,6 +124,5 @@ public class Hotel {
                .map(x-> x.checkOutAllNow(currentTime))
                 .flatMap(Collection::parallelStream)
                 .collect(toList());
-
     }
 }
