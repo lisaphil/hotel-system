@@ -13,6 +13,8 @@ import com.cmc.typed.RoomType;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.cmc.hotel.Hotel.goodByeMessage;
+import static com.cmc.hotel.Hotel.priceMessage;
 import static java.util.Collections.emptyList;
 
 public class RoomTypedRequestHandler {
@@ -150,4 +152,18 @@ public class RoomTypedRequestHandler {
         return statistics;
     }
 
+    public List<String> checkOutAllNow(LocalDate currentTime) {
+        List<String> result = guestInformation.stream()
+                .filter(x -> x.getTo().isEqual(currentTime))
+                .map(x -> x.isPayed() ? goodByeMessage : createCheque(x))
+                .collect(Collectors.toList());
+        guestInformation = new ArrayList<>(guestInformation.stream().filter(x -> !x.getTo().isEqual(currentTime)).collect(Collectors.toList()));
+        return result;
+    }
+
+    private String createCheque(BookingInfo bookingInfo) {
+        int price = type.getPrice();
+        double sum = bookingInfo.isDiscount() ? price * discount : price;
+        return priceMessage + sum;
+    }
 }

@@ -79,7 +79,6 @@ public class Hotel {
         return today.getHour() + today.getMinute() + today.getSecond() + today.getDayOfYear() + today.getNano();
     }
 
-    //TODO test
     public RoomType checkIn(RoomType roomType, BookingInfo info, boolean pay) throws CheckInException {
         RoomTypedRequestHandler roomTypedRequestHandler =
                 handlers.stream()
@@ -108,34 +107,6 @@ public class Hotel {
         }
     }
 
-    public String checkOut(String name) {
-        Optional<BookingInfo> optionalBookingInfo = handlers.stream()
-                .map(x -> x.getBookInfoList())
-                .flatMap(Collection::stream)
-                .filter(x -> x.getName().equalsIgnoreCase(name))
-                .findFirst();
-        if (optionalBookingInfo.isPresent()) {
-            BookingInfo bookingInfo = optionalBookingInfo.get();
-            return bookingInfo.isPayed() ? goodByeMessage : createCheque(bookingInfo);
-        }
-        return null;
-    }
-
-    private String createCheque(BookingInfo bookingInfo) {
-        Optional<RoomType> roomTypeOptional = handlers.stream()
-                .filter(x -> x.getBookInfoList()
-                        .stream()
-                        .anyMatch(y -> y.equals(bookingInfo)))
-                .map(RoomTypedRequestHandler::getType)
-                .findFirst();
-        if (roomTypeOptional.isPresent()) {
-            int price = roomTypeOptional.get().getPrice();
-            double sum = bookingInfo.isDiscount() ? price * discount : price;
-            return priceMessage + sum;
-        }
-        return "";
-    }
-
     public List<java.lang.Double> checkInAllNow(LocalDate currentTime) {
         log(currentTime);
         return handlers.stream()
@@ -146,5 +117,13 @@ public class Hotel {
 
     public void log(LocalDate currentTime) {
         handlers.stream().map(x-> x.log(currentTime)).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<java.lang.String> checkOutAllNow(LocalDate currentTime) {
+        return handlers.stream()
+               .map(x-> x.checkOutAllNow(currentTime))
+                .flatMap(Collection::parallelStream)
+                .collect(toList());
+
     }
 }
