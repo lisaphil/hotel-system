@@ -134,9 +134,14 @@ public class Hotel {
     }
 
     public List<java.lang.Double> checkInAllNow(LocalDate currentTime) {
+        log(currentTime);
         return handlers.stream()
                 .map(x -> x.checkInToday(currentTime))
                 .flatMap(Collection::stream)
                 .collect(toList());
+    }
+
+    public void log(LocalDate currentTime) {
+        handlers.stream().map(x-> x.log(currentTime)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

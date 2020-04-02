@@ -16,6 +16,7 @@ public class RoomTypedRequestHandler {
     public final static String noBookingMessage = "there is no booking";
 
     public final static double discount = 0.7;
+    private final Statistics statistics;
 
     @Getter
     private RoomType type;
@@ -36,6 +37,7 @@ public class RoomTypedRequestHandler {
         this.type = type;
         this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1; // TODO
         this.bookInfoList = new ArrayList<>();
+        this.statistics = new Statistics(type);
     }
 
     public HotelInfo checkByDate(LocalDate today) {
@@ -133,4 +135,14 @@ public class RoomTypedRequestHandler {
                 .collect(Collectors.toList())
                 : emptyList();
     }
+
+    public Object log(LocalDate currentTime) {
+        return statistics.log(currentTime, guestInformation);
+    }
+
+    public Statistics getStatistics() {
+        statistics.countFinal(guestInformation);
+        return statistics;
+    }
+
 }

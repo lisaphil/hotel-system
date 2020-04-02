@@ -53,7 +53,6 @@ public class render extends JDialog implements ActionListener {
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
 
-    private Statisctisc statistisc = new Statisctisc();
 
     public render() {
         setContentPane(contentPane);
@@ -86,16 +85,46 @@ public class render extends JDialog implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         JMenu statisticsMenuItem = new JMenu("Statistics");
         JMenuItem allRooms = new JMenuItem("All Rooms");
-        allRooms.addActionListener(e -> {
-            statistisc.getAll();
-            JOptionPane.showMessageDialog(render.this,
-                    "Использование изображения в окне сообщений",
-                    "Statistics", JOptionPane.INFORMATION_MESSAGE);
-        });
-        statisticsMenuItem.add(allRooms);
+
+        JMenuItem suite = new JMenuItem(RoomType.Suite.getName());
+        allRooms.addActionListener(getSatisticsActionListener(null));
+        suite.addActionListener(getSatisticsActionListener(RoomType.Suite));
+        java.util.List<JMenuItem> menuItems = new ArrayList<>(Arrays.asList(RoomType.values()))
+                .stream()
+                .map(x -> {
+                    JMenuItem menuItem = new JMenuItem(x.getName());
+                    menuItem.addActionListener(getSatisticsActionListener(x));
+                    statisticsMenuItem.add(menuItem);
+                    return menuItem;
+                }).collect(toList());
         menuBar.add(statisticsMenuItem);
+        statisticsMenuItem.add(allRooms);
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
+    }
+
+    private ActionListener getSatisticsActionListener(RoomType type) {
+        return e -> {
+            if (hotelSystemModeling == null) {
+                JOptionPane.showMessageDialog(render.this,
+                        "Not started! Sorry(",
+                        "Statistics", JOptionPane.WARNING_MESSAGE);
+            } else if (!hotelSystemModeling.isFinish()) {
+                JOptionPane.showMessageDialog(render.this,
+                        "Not finished! Sorry(",
+                        "Statistics", JOptionPane.WARNING_MESSAGE);
+            } else {
+                java.util.List<String> collect =
+                        hotelSystemModeling.getRoomActionHandlers()
+                                .stream()
+                                .filter(x -> type == null || x.getType() == type)
+                                .map(x -> x.getType().toString() + " " + x.getStatistics().getAvBusyness())
+                                .collect(toList());
+                JOptionPane.showMessageDialog(render.this,
+                        collect.toString(),
+                        "Statistics", JOptionPane.INFORMATION_MESSAGE);
+            }
+        };
     }
 
 

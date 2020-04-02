@@ -77,10 +77,11 @@ public class HotelSystemModeling implements Runnable {
     private void performEvent(RoomType roomType, BookingInfo bookingInfo, LocalDate currentTime) throws BookingException, CheckInException {
         hotelSystem.checkInAllNow(currentTime);
         RandomGenerator.ActionType actionType = randomGenerator.generateEvent();
-        boolean pay = true; //TODO
+        boolean pay = true;
         switch (actionType) {
             case CheckIn:
-                //hotelSystem.checkIn(roomType, bookingInfo, pay);
+                bookingInfo.setFrom(currentTime);
+                hotelSystem.checkIn(roomType, bookingInfo, pay);
                 break;
             case Book:
                 hotelSystem.book(roomType, bookingInfo);
