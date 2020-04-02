@@ -62,6 +62,7 @@ public class Render extends JDialog implements ActionListener {
     private java.util.List<java.util.List<String>> allBookingInfos = new ArrayList<>();
 
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
+    private java.util.List<java.util.List<String>> allCheckInInfos = new ArrayList<>();
 
 
     public Render() {
@@ -330,10 +331,16 @@ public class Render extends JDialog implements ActionListener {
         }
         for (java.util.List<String> info : getCheckInBookRows()) {
             tableCheckInModel.addRow(info.toArray());
+            allCheckInInfos.add(info);
         }
         for (int i : getBookRowsToRemove()) {
             if (tableBookModel.getRowCount() > i) {
                 tableBookModel.removeRow(i);
+            }
+        }
+        for (int i : getCheckInRowsToRemove()) {
+            if (tableCheckInModel.getRowCount() > i) {
+                tableCheckInModel.removeRow(i);
             }
         }
     }
@@ -344,6 +351,19 @@ public class Render extends JDialog implements ActionListener {
         ArrayList<Integer> result = new ArrayList<>();
         for (java.util.List<String> bookInfo: allBookingInfos) {
             if (!bookIdsSet.contains(bookInfo.get(0))) {
+                result.add(index);
+            }
+            index++;
+        }
+        return result;
+    }
+
+    private java.util.List<Integer> getCheckInRowsToRemove() {
+        Set<String> checkInIdsSet = checkInInfos.stream().map(x -> x.get(0)).collect(Collectors.toSet());
+        int index = 0;
+        ArrayList<Integer> result = new ArrayList<>();
+        for (java.util.List<String> checkInInfo: allCheckInInfos) {
+            if (!checkInIdsSet.contains(checkInInfo.get(0))) {
                 result.add(index);
             }
             index++;
