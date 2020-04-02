@@ -20,7 +20,6 @@ public class Tables {
         java.util.List<Object> columnHeaderList = new ArrayList<>(Arrays.asList(columnsBookHeader));
         columnHeaderList.add("room type");
         tableBookModel.setColumnIdentifiers(columnHeaderList.toArray());
-        tableBookModel.addRow(Stream.of(columnsBookHeader).map(x -> "tt").toArray(String[]::new));
         return tableBookModel;
     }
 

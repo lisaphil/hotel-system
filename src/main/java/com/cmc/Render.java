@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,6 +59,8 @@ public class Render extends JDialog implements ActionListener {
     private static Object[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).map(Field::getName).toArray();
 
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
+    private java.util.List<java.util.List<String>> allBookingInfos = new ArrayList<>();
+
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
 
 
@@ -294,7 +297,10 @@ public class Render extends JDialog implements ActionListener {
                 }).collect(toList()))
                 .flatMap(Collection::parallelStream)
                 .collect(toList());
-        java.util.List<java.util.List<String>> difference = newBookInfos.stream().filter(x -> !bookingInfos.contains(x)).collect(Collectors.toList());
+        java.util.List<java.util.List<String>> difference =
+                newBookInfos.stream()
+                        .filter(x -> !bookingInfos.contains(x))
+                        .collect(Collectors.toList());
         bookingInfos = newBookInfos;
         return difference;
     }
@@ -320,10 +326,29 @@ public class Render extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         for (java.util.List<String> info : getNewBookRows()) {
             tableBookModel.addRow(info.toArray());
+            allBookingInfos.add(info);
         }
         for (java.util.List<String> info : getCheckInBookRows()) {
             tableCheckInModel.addRow(info.toArray());
         }
+        for (int i : getBookRowsToRemove()) {
+            if (tableBookModel.getRowCount() > i) {
+                tableBookModel.removeRow(i);
+            }
+        }
+    }
+
+    private java.util.List<Integer> getBookRowsToRemove() {
+        Set<String> bookIdsSet = bookingInfos.stream().map(x -> x.get(0)).collect(Collectors.toSet());
+        int index = 0;
+        ArrayList<Integer> result = new ArrayList<>();
+        for (java.util.List<String> bookInfo: allBookingInfos) {
+            if (!bookIdsSet.contains(bookInfo.get(0))) {
+                result.add(index);
+            }
+            index++;
+        }
+        return result;
     }
 
     private void createUIComponents() {

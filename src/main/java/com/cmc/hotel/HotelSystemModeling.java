@@ -63,7 +63,7 @@ public class HotelSystemModeling implements Runnable {
             BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime);
             RoomType roomType = randomGenerator.generateRoomType();
             try {
-                Thread.sleep(50);
+                Thread.sleep(66);
                 performEvent(roomType, bookingInfo, currentTime);
             } catch (BookingException e) {
                 e.getMessage(); // log this?
