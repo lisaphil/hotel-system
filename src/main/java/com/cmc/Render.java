@@ -54,7 +54,7 @@ public class Render extends JDialog implements ActionListener {
     private ImmutableList<RoomTypedRequestHandler> roomActionHandlers;
     private DefaultTableModel tableBookModel;
     private DefaultTableModel tableCheckInModel;
-      private static Object[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
+    private static Object[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray();
     private static Object[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).map(Field::getName).toArray();
 
     private java.util.List<java.util.List<String>> bookingInfos = new ArrayList<>();
@@ -123,14 +123,21 @@ public class Render extends JDialog implements ActionListener {
                         "Not finished! Sorry(",
                         "Statistics", JOptionPane.WARNING_MESSAGE);
             } else {
-                java.util.List<String> collect =
+                String str =
                         hotelSystemModeling.getRoomActionHandlers()
                                 .stream()
                                 .filter(x -> type == null || x.getType() == type)
-                                .map(x -> x.getType().toString() + " " + x.getStatistics().getAvBusyness())
-                                .collect(toList());
+                                .map(x -> {
+                                    Statistics statistics = x.getStatistics();
+                                    String avBusyness = String.format("<dd> <b>average busyness</b> is %f </dd>", statistics.getAvBusyness());
+                                    String maxBusyness = String.format("<dd> <b>max busyness</b> is %f in %s </dd>", statistics.getMaxBusyness(), statistics.getWhenMaxBusyness().toString());
+                                    String minBusyness = String.format("<dd> <b>min busyness</b> is %f in %s </dd>", statistics.getMinBusyness(), statistics.getWhenMinBusyness().toString());
+                                    return "<dt>" + x.getType().toString() + "</dt>"
+                                            + avBusyness + maxBusyness + minBusyness;
+                                })
+                                .reduce("", (x,y)-> x+ y);
                 JOptionPane.showMessageDialog(Render.this,
-                        collect.toString(),
+                        "<html>"+ "<dl>" + str + "</dl>" + "</html>",
                         "Statistics", JOptionPane.INFORMATION_MESSAGE);
             }
         };
@@ -302,7 +309,7 @@ public class Render extends JDialog implements ActionListener {
                                     return checkInInfo;
                                 })
                                 .collect(toList()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toList());
         java.util.List<java.util.List<String>> difference = newCheckInInfos.stream().filter(x -> !checkInInfos.contains(x)).collect(Collectors.toList());
         checkInInfos = newCheckInInfos;
