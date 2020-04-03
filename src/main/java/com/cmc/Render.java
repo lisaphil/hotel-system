@@ -74,7 +74,6 @@ public class Render extends JDialog implements ActionListener {
         getRootPane().setDefaultButton(buttonOK);
 
         buttonOK.addActionListener(getStartButtonListener());
-        setMenu();
 
         this.tables = new Tables();
 
@@ -110,13 +109,11 @@ public class Render extends JDialog implements ActionListener {
                 .map(x -> {
                     JMenuItem menuItem = new JMenuItem(x.getName());
                     menuItem.addActionListener(getHandledRequestsStatisticsActionListener(x));
-                    busyness.add(menuItem);
+                    handledRequests.add(menuItem);
                     return menuItem;
                 }).collect(Collectors.toList());
 
-        JMenuItem suite = new JMenuItem(RoomType.Suite.getName());
         allRooms.addActionListener(getBusynessStatisticsActionListener(null));
-        suite.addActionListener(getBusynessStatisticsActionListener(RoomType.Suite));
         java.util.List<JMenuItem> menuItems = new ArrayList<>(Arrays.asList(RoomType.values()))
                 .stream()
                 .map(x -> {
@@ -420,6 +417,7 @@ public class Render extends JDialog implements ActionListener {
                 setInputToDefault();
                 hotelSystemModeling = createHotelSystemModelingWithDefaultArgs();
             }
+            setMenu();
             hotelSystemModeling.setRandomParam(Integer.parseInt(randomSpinner.getValue().toString()));
             Thread myThready = new Thread(hotelSystemModeling);    //Создание потока "myThready"
             myThready.start();
