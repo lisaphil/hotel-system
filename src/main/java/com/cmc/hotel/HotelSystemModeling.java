@@ -90,13 +90,14 @@ public class HotelSystemModeling implements Runnable {
         hotelSystem.checkOutAllNow(currentTime);
         hotelSystem.checkInAllNow(currentTime);
         RandomGenerator.ActionType actionType = randomGenerator.generateEvent();
-        boolean pay = true;
+        boolean pay = randomGenerator.getPayed();
         switch (actionType) {
             case CheckIn:
                 bookingInfo.setFrom(currentTime);
                 hotelSystem.checkIn(roomType, bookingInfo, pay);
                 break;
             case Book:
+                bookingInfo.setPayed(pay);
                 hotelSystem.book(roomType, bookingInfo);
         }
         requestsStatistics.log(actionType);

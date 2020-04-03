@@ -22,10 +22,19 @@ public class RandomGenerator {
     private Random randomRoom;
     private Random randomAction;
     private Random randomDelta;
+    private Random randomPayed;
 
 
     public long generateDeltaHours() {
-        return randomDelta.nextInt(5);
+        int result = randomDelta.nextInt(5);
+        while (result <= 0) {
+            result = randomDelta.nextInt(5);
+        }
+        return result;
+    }
+
+    public boolean getPayed() {
+        return randomPayed.nextBoolean();
     }
 
     public enum ActionType {
@@ -37,6 +46,7 @@ public class RandomGenerator {
         ActionType(String s) {
             name = s;
         }
+
         public String getName() {
             return name;
         }
@@ -56,6 +66,7 @@ public class RandomGenerator {
         this.randomRoom = new Random(random.nextInt());
         this.randomAction = new Random(random.nextInt());
         this.randomDelta = new Random(random.nextInt());
+        this.randomPayed = new Random(random.nextInt());
         this.startDate = startDate;
         this.finishDate = finishDate;
     }
@@ -77,11 +88,12 @@ public class RandomGenerator {
         int randomIndex = randomRoom.nextInt(roomTypes.size());
         return roomTypes.get(randomIndex);
     }
+
     public Pair<LocalDate, LocalDate> generateDate(LocalDate currentTime) {
         int days = (int) Duration.between(currentTime.atStartOfDay(), finishDate.atStartOfDay()).toDays() + 1;
-        int firstRandom = randomDate.nextInt(days );
+        int firstRandom = randomDate.nextInt(days);
         int secondRandom = randomDate.nextInt(days);
-        while (firstRandom == secondRandom && days!=0) {
+        while (firstRandom == secondRandom && days != 0) {
             secondRandom = randomDate.nextInt(days);
         }
         int min = min(firstRandom, secondRandom);
