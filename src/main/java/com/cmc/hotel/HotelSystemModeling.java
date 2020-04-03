@@ -29,6 +29,9 @@ public class HotelSystemModeling implements Runnable {
     private RandomGenerator randomGenerator;
     @Getter
     private boolean finish;
+    @Setter @Getter
+    private boolean pause;
+
     @Setter
     private int randomParam;
     private RequestsStatistics requestsStatistics;
@@ -38,6 +41,7 @@ public class HotelSystemModeling implements Runnable {
         this.lengthInDays = lengthInDays;
         this.finish = false;
         this.hotelSystem = new Hotel(suiteInt, juniourInt, singleInt, doubleInt, doubleWithExtra);
+        this.pause = false;
     }
 
     public static HotelSystemModeling createHotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
@@ -66,11 +70,18 @@ public class HotelSystemModeling implements Runnable {
         currentTime = startDate.atStartOfDay();
         randomGenerator = new RandomGenerator(startDate, finishDate, randomParam);
         while (currentTime.isBefore(finishDate.atStartOfDay())) {
+            while (pause) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             LocalDate currentTime = this.currentTime.toLocalDate();
             BookingInfo bookingInfo = randomGenerator.generateBookInfo(currentTime);
             RoomType roomType = randomGenerator.generateRoomType();
             try {
-                Thread.sleep(66);
+                Thread.sleep(100);
                 performEvent(roomType, bookingInfo, currentTime);
             } catch (BookingException e) {
                 System.out.println(e.getMessage());

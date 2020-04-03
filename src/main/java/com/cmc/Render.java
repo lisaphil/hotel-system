@@ -40,7 +40,7 @@ public class Render extends JDialog implements ActionListener {
 
     private JPanel contentPane;
     private JButton buttonOK;
-    private JButton buttonCancel;
+    private JButton buttonPause;
     private JButton checkButton;
     private JLabel label;
     private JTable tableBook;
@@ -66,6 +66,7 @@ public class Render extends JDialog implements ActionListener {
 
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
     private java.util.List<java.util.List<String>> allCheckInInfos = new ArrayList<>();
+    private Thread myThready;
 
 
     public Render() {
@@ -82,7 +83,7 @@ public class Render extends JDialog implements ActionListener {
         tableBook.setModel(tableBookModel);
         tableCheckIn.setModel(tableCheckInModel);
 
-        buttonCancel.addActionListener(e -> onCancel());
+        buttonPause.addActionListener(e -> onPause());
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -178,10 +179,12 @@ public class Render extends JDialog implements ActionListener {
         };
     }
 
-
     private void onCancel() {
-        // add your code here if necessary
         dispose();
+    }
+
+    private void onPause() {
+        hotelSystemModeling.setPause(!hotelSystemModeling.isPause());
     }
 
     public static void main(String[] args) {
@@ -218,9 +221,9 @@ public class Render extends JDialog implements ActionListener {
         buttonOK = new JButton();
         buttonOK.setText("Start");
         panel2.add(buttonOK, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        buttonCancel = new JButton();
-        buttonCancel.setText("Cancel");
-        panel2.add(buttonCancel, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        buttonPause = new JButton();
+        buttonPause.setText("Cancel");
+        panel2.add(buttonPause, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         checkButton = new JButton();
         checkButton.setText("Check");
         panel2.add(checkButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -356,6 +359,7 @@ public class Render extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        buttonPause.setText(hotelSystemModeling.isPause() ? "Continue" : "Pause");
         for (java.util.List<String> info : getNewBookRows()) {
             tableBookModel.addRow(info.toArray());
             allBookingInfos.add(info);
@@ -419,7 +423,7 @@ public class Render extends JDialog implements ActionListener {
             }
             setMenu();
             hotelSystemModeling.setRandomParam(Integer.parseInt(randomSpinner.getValue().toString()));
-            Thread myThready = new Thread(hotelSystemModeling);    //Создание потока "myThready"
+            myThready = new Thread(hotelSystemModeling);
             myThready.start();
             timer.start();
             roomActionHandlers = hotelSystemModeling.getRoomActionHandlers();
