@@ -24,6 +24,7 @@ public class HotelSystemModeling implements Runnable {
     private Hotel hotelSystem;
     private LocalDate startDate;
     private LocalDate finishDate;
+    @Getter
     private LocalDateTime currentTime;
     private long deltaHours = 2; // TODO make random
     private RandomGenerator randomGenerator;

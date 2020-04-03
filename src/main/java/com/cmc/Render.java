@@ -52,6 +52,7 @@ public class Render extends JDialog implements ActionListener {
     private JSpinner doubleSpinner;
     private JSpinner doubleExtraSpinner;
     private JSpinner randomSpinner;
+    private JLabel time;
     private final static String newline = "\n";
     private HotelSystemModeling hotelSystemModeling;
     private final Timer timer = new Timer(1000, this);
@@ -73,7 +74,6 @@ public class Render extends JDialog implements ActionListener {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
         buttonOK.addActionListener(getStartButtonListener());
 
         this.tables = new Tables();
@@ -360,6 +360,7 @@ public class Render extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         buttonPause.setText(hotelSystemModeling.isPause() ? "Continue" : "Pause");
+        time.setText(hotelSystemModeling.getCurrentTime().toString());
         for (java.util.List<String> info : getNewBookRows()) {
             tableBookModel.addRow(info.toArray());
             allBookingInfos.add(info);
