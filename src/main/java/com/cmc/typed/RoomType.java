@@ -13,7 +13,7 @@ public enum RoomType {
     Double(100, suiteInt + juniourInt+ singleInt  + 1, suiteInt + juniourInt+ singleInt + doubleInt, "Double"),
     DoubleExtraBed(120, suiteInt + juniourInt+ singleInt + doubleInt + 1, suiteInt + juniourInt+ singleInt + doubleInt + doubleWithExtra, "Double with Extra Bed");
     @Getter
-    private final int price;
+    private final int pricePerNight;
     @Getter
     private final int from;
     @Getter
@@ -23,8 +23,8 @@ public enum RoomType {
 
     private final int testK = 5;
 
-    RoomType(int price, int from, int to, String name) {
-        this.price = price;
+    RoomType(int pricePerNight, int from, int to, String name) {
+        this.pricePerNight = pricePerNight;
         this.from = from <= 0 ? 1 : from;
         this.to = to <= 0 ? testK : to;
         this.name = name;

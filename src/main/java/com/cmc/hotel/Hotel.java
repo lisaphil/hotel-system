@@ -65,7 +65,7 @@ public class Hotel {
                 .get()
                 .book(info);
         if (!bookingResult) {
-            Optional<RoomTypedRequestHandler> nextAvailableRoomType = handlers.stream().filter(x -> x.getPrice() > roomType.getPrice()).findFirst();
+            Optional<RoomTypedRequestHandler> nextAvailableRoomType = handlers.stream().filter(x -> x.getPrice() > roomType.getPricePerNight()).findFirst();
             if (nextAvailableRoomType.isPresent() && nextAvailableRoomType.get().book(info)) {
                 return nextAvailableRoomType.get().getType();
             }

@@ -1,6 +1,5 @@
 package com.cmc.info;
 
-import com.cmc.info.BookingInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,17 +9,17 @@ public class CheckInInfo extends BookingInfo {
     @Getter @Setter
     protected int roomNumber;
     @Getter @Setter
-    protected double price;
-    public CheckInInfo(double price, int roomNumber, BookingInfo info) {
+    protected double pricePerNight;
+    public CheckInInfo(double pricePerNight, int roomNumber, BookingInfo info) {
         super(info);
-        this.price = price;
+        this.pricePerNight = pricePerNight;
         this.roomNumber = roomNumber;
     }
 
     public List<String> getCheckInInfo() {
         List<String> info = this.getBookInfo();
         info.add(String.valueOf(roomNumber));
-        info.add(String.valueOf(price));
+        info.add(String.valueOf(pricePerNight));
         return info;
     }
 }

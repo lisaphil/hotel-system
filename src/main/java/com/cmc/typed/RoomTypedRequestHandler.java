@@ -69,7 +69,7 @@ public class RoomTypedRequestHandler {
     }
 
     public int getPrice() {
-        return type.getPrice();
+        return type.getPricePerNight();
     }
 
     int getFirstRoomOfThisType() {
@@ -161,7 +161,7 @@ public class RoomTypedRequestHandler {
     }
 
     private String createCheque(BookingInfo bookingInfo) {
-        int price = type.getPrice();
+        int price = type.getPricePerNight();
         double sum = bookingInfo.isDiscount() ? price * discount : price;
         return priceMessage + sum;
     }
