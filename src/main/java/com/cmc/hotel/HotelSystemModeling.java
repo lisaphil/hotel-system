@@ -2,6 +2,7 @@ package com.cmc.hotel;
 
 import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
+import com.cmc.typed.TypedNumberOfRooms;
 import com.cmc.info.BookingInfo;
 import com.cmc.random.RandomGenerator;
 import com.cmc.statistics.RequestsStatistics;
@@ -38,19 +39,20 @@ public class HotelSystemModeling implements Runnable {
     private RequestsStatistics requestsStatistics;
 
 
-    private HotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
+    private HotelSystemModeling(TypedNumberOfRooms typedNumberOfRooms, int lengthInDays) {
         this.lengthInDays = lengthInDays;
         this.finish = false;
-        this.hotelSystem = new Hotel(suiteInt, juniourInt, singleInt, doubleInt, doubleWithExtra);
+        this.hotelSystem = new Hotel(typedNumberOfRooms);
         this.pause = false;
     }
 
-    public static HotelSystemModeling createHotelSystemModeling(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra, int lengthInDays) {
-        return new HotelSystemModeling(suiteInt, juniourInt, singleInt, doubleInt, doubleWithExtra, lengthInDays);
+    public static HotelSystemModeling createHotelSystemModeling(TypedNumberOfRooms typedNumberOfRooms, int lengthInDays) {
+        return new HotelSystemModeling(typedNumberOfRooms, lengthInDays);
     }
 
     public static HotelSystemModeling createHotelSystemModelingWithDefaultArgs() {
-        return new HotelSystemModeling(defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberDays);
+        TypedNumberOfRooms typedNumberOfRooms = new TypedNumberOfRooms(defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms, defaultNumberRooms);
+        return new HotelSystemModeling(typedNumberOfRooms, defaultNumberDays);
     }
 
     public ImmutableList<RoomTypedRequestHandler> getRoomActionHandlers() {

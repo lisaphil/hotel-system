@@ -5,6 +5,7 @@ import com.cmc.exceptions.CheckInException;
 import com.cmc.info.BookingInfo;
 import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
+import com.cmc.typed.TypedNumberOfRooms;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 
@@ -31,20 +32,18 @@ public class Hotel {
     private RoomTypedRequestHandler doubleRoom;
     private RoomTypedRequestHandler doubleExtraBedRoom;
 
-    //List<Integer> uniqueIds = (new Random()).ints(1, 10000).distinct().boxed().collect(toList());
-
     @Getter
     private ImmutableList<RoomTypedRequestHandler> handlers;
     public final static String goodByeMessage = "Thank You for staying with us!";
     public final static String priceMessage = "Thank You for staying with us! Your invoice is : ";
 
 
-    Hotel(int suiteInt, int juniourInt, int singleInt, int doubleInt, int doubleWithExtra) {
-        Hotel.suiteInt = suiteInt;
-        Hotel.juniourInt = juniourInt;
-        Hotel.singleInt = singleInt;
-        Hotel.doubleInt = doubleInt;
-        Hotel.doubleWithExtra = doubleWithExtra;
+    Hotel(TypedNumberOfRooms typedNumberOfRooms) {
+        Hotel.suiteInt = typedNumberOfRooms.getSuiteInt();
+        Hotel.juniourInt = typedNumberOfRooms.getJuniourInt();
+        Hotel.singleInt = typedNumberOfRooms.getSingleInt();
+        Hotel.doubleInt = typedNumberOfRooms.getDoubleInt();
+        Hotel.doubleWithExtra = typedNumberOfRooms.getDoubleWithExtra();
 
         suiteRoom = new RoomTypedRequestHandler(Suite);
         juniorSuiteRoom = new RoomTypedRequestHandler(JuniorSuite);
@@ -56,7 +55,6 @@ public class Hotel {
         handlers = ImmutableList.copyOf(rooms);
     }
 
-    //TODO test
     public RoomType book(RoomType roomType, BookingInfo info) throws BookingException {
         info.setUniqueId(generateUniqueId());
         boolean bookingResult = handlers.stream()
@@ -87,7 +85,7 @@ public class Hotel {
                         .get();
         try {
             roomTypedRequestHandler.checkIn(info, pay);
-            return roomType; // TODO
+            return roomType;
         } catch (CheckInException e) {
         }
         info.setPayed(pay);
@@ -99,7 +97,7 @@ public class Hotel {
                             .findFirst()
                             .get();
             newRoomTypedRequestHandler.checkIn(info, pay);
-            return newRoomType; // TODO
+            return newRoomType;
         } catch (BookingException e) {
             throw new CheckInException(fullHotelMessage, roomType);
         } catch (CheckInException e) {

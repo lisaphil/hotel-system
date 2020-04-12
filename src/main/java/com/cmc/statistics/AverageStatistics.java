@@ -1,7 +1,6 @@
 package com.cmc.statistics;
 
 import com.cmc.info.CheckInInfo;
-import com.cmc.info.HotelInfo;
 import com.cmc.typed.RoomType;
 import lombok.Getter;
 

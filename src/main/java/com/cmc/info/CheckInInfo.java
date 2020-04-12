@@ -5,19 +5,21 @@ import lombok.Setter;
 
 import java.util.List;
 
-public class CheckInInfo extends BookingInfo {
+public class CheckInInfo {
+    @Getter
+    protected BookingInfo bookInfo;
     @Getter @Setter
     protected int roomNumber;
     @Getter @Setter
     protected double pricePerNight;
     public CheckInInfo(double pricePerNight, int roomNumber, BookingInfo info) {
-        super(info);
+        this.bookInfo = info;
         this.pricePerNight = pricePerNight;
         this.roomNumber = roomNumber;
     }
 
     public List<String> getCheckInInfo() {
-        List<String> info = this.getBookInfo();
+        List<String> info = bookInfo.getBookInfo();
         info.add(String.valueOf(roomNumber));
         info.add(String.valueOf(pricePerNight));
         return info;

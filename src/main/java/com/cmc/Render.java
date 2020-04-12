@@ -9,7 +9,9 @@ import com.cmc.render.Tables;
 import com.cmc.statistics.AverageStatistics;
 import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
+import com.cmc.typed.TypedNumberOfRooms;
 import com.google.common.collect.ImmutableList;
+import com.intellij.uiDesigner.core.GridConstraints;
 
 
 import javax.swing.*;
@@ -415,8 +417,8 @@ public class Render extends JDialog implements ActionListener {
         return e -> {
             try {
                 java.util.List<Integer> args = checkSpinners();
-                hotelSystemModeling = createHotelSystemModeling(
-                        args.get(1), args.get(2), args.get(3), args.get(4), args.get(5), args.get(0));
+                TypedNumberOfRooms typedNumberOfRooms = new TypedNumberOfRooms(args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
+                hotelSystemModeling = createHotelSystemModeling(typedNumberOfRooms, args.get(0));
             } catch (WrongInputException ex) {
                 label.setText(String.format("<html>Wrong input of %s , <br> created Hotel System with default arguments:<br> (check input fields) </html> ", ex.getType()));
                 setInputToDefault();

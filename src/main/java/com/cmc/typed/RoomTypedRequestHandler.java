@@ -8,7 +8,6 @@ import com.cmc.statistics.AverageStatistics;
 import com.cmc.exceptions.CheckInException;
 import com.cmc.info.BookingInfo;
 import com.cmc.info.CheckInInfo;
-import com.cmc.info.HotelInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,14 +45,6 @@ public class RoomTypedRequestHandler {
         this.averageStatistics = new AverageStatistics(type);
     }
 
-    public HotelInfo checkByDate(LocalDate today) {
-        HotelInfo dayHotelInfo = new HotelInfo();
-        long bookedRooms = bookInfoList.stream().filter(x -> x.checkToday(today)).count();
-        dayHotelInfo.setBookedRooms(Math.toIntExact(bookedRooms));
-        dayHotelInfo.setBusyRooms(emptyList());//TODO
-        dayHotelInfo.setFreeRooms(0);
-        return dayHotelInfo;
-    }
 
     public void addToBookInfoList(BookingInfo info) {
         bookInfoList.add(info);
@@ -84,7 +75,7 @@ public class RoomTypedRequestHandler {
         LocalDate from = info.getFrom();
         LocalDate to = info.getTo();
         long bookedRooms = bookInfoList.stream().filter(x -> x.checkIntersection(from, to)).count();
-        long checkedInRooms = guestInformation.stream().filter(x -> x.checkIntersection(from, to)).count();
+        long checkedInRooms = guestInformation.stream().filter(x -> x.getBookInfo().checkIntersection(from, to)).count();
         boolean result = (bookedRooms + checkedInRooms) < roomsNumber;
         if (result) {
             addToBookInfoList(info);
@@ -109,7 +100,7 @@ public class RoomTypedRequestHandler {
             int firstRoomOfThisType = getFirstRoomOfThisType();
             int lastRoomOfThisType = getLastRoomOfThisType();
             Integer roomNumber = guestInformation.stream()
-                    .filter(x -> x.checkIntersection(from, to))
+                    .filter(x -> x.getBookInfo().checkIntersection(from, to))
                     .map(CheckInInfo::getRoomNumber)
                     .reduce(firstRoomOfThisType, (x, y) -> x==y ? ++x : x);
             if (roomNumber > lastRoomOfThisType) {
@@ -153,10 +144,10 @@ public class RoomTypedRequestHandler {
 
     public List<String> checkOutAllNow(LocalDate currentTime) {
         List<String> result = guestInformation.stream()
-                .filter(x -> x.getTo().isEqual(currentTime))
-                .map(x -> x.isPayed() ? goodByeMessage : createCheque(x))
+                .filter(x -> x.getBookInfo().getTo().isEqual(currentTime))
+                .map(x -> x.getBookInfo().isPayed() ? goodByeMessage : createCheque(x.getBookInfo()))
                 .collect(Collectors.toList());
-        guestInformation = new ArrayList<>(guestInformation.stream().filter(x -> !x.getTo().isEqual(currentTime)).collect(Collectors.toList()));
+        guestInformation = new ArrayList<>(guestInformation.stream().filter(x -> !x.getBookInfo().getTo().isEqual(currentTime)).collect(Collectors.toList()));
         return result;
     }
 
