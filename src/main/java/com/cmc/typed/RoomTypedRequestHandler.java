@@ -133,7 +133,7 @@ public class RoomTypedRequestHandler {
                 : emptyList();
     }
 
-    public Object log(LocalDate currentTime) {
+    public LocalDate log(LocalDate currentTime) {
         return averageStatistics.log(currentTime, guestInformation);
     }
 

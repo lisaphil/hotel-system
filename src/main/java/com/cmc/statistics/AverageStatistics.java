@@ -34,7 +34,7 @@ public class AverageStatistics {
         this.minBusyness = 1;
     }
 
-    public Object log(LocalDate currentTime, ArrayList<CheckInInfo> checkInInfoList) {
+    public LocalDate log(LocalDate currentTime, ArrayList<CheckInInfo> checkInInfoList) {
         if (lastUpdate.isBefore(currentTime)) {
             double busyness = (double)checkInInfoList.size() / roomsNumber;
             if (maxBusyness < busyness) {
@@ -49,7 +49,7 @@ public class AverageStatistics {
             numberOfDays ++;
             lastUpdate = currentTime;
         }
-        return null;
+        return lastUpdate;
     }
 
     public void countFinal(ArrayList<CheckInInfo> checkInInfoList) {
