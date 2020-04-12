@@ -70,6 +70,7 @@ public class Render extends JDialog implements ActionListener {
     private java.util.List<java.util.List<String>> checkInInfos = new ArrayList<>();
     private java.util.List<java.util.List<String>> allCheckInInfos = new ArrayList<>();
     private Thread myThready;
+    private java.util.List<JSpinner> inputSpinners;
 
 
     public Render() {
@@ -80,6 +81,7 @@ public class Render extends JDialog implements ActionListener {
 
         this.tables = new Tables();
 
+        setInputToDefault();
         tableBookModel = tables.getBookjTable();
         tableCheckInModel = tables.getCheckInjTable();
         tableBook.setModel(tableBookModel);
@@ -448,7 +450,7 @@ public class Render extends JDialog implements ActionListener {
     }
 
     private java.util.List<Integer> checkSpinners() throws WrongInputException {
-        java.util.List<JSpinner> inputSpinners = Stream.of(numberOfDaysSpinner, suiteSpinner, juniorSuiteSpinner, singleSpinner, doubleSpinner, doubleExtraSpinner).collect(Collectors.toList());
+        inputSpinners = Stream.of(numberOfDaysSpinner, suiteSpinner, juniorSuiteSpinner, singleSpinner, doubleSpinner, doubleExtraSpinner).collect(Collectors.toList());
         java.util.List<String> strings = inputSpinners.stream().map(x -> x.getValue().toString()).collect(toList());
         String numberOfDaysStr = strings.get(0);
         int numberOfDays = Integer.parseInt(numberOfDaysStr);

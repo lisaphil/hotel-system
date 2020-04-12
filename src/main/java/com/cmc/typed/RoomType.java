@@ -30,14 +30,6 @@ public enum RoomType {
         this.name = name;
     }
 
-    public static String[] names() {
-        return Stream.of(RoomType.values()).map(x -> x.name).toArray(String[]::new);
-    }
-
-    boolean check(int number) {
-        return number > from && number < to;
-    }
-
     @Override
     public String toString() {
         return getName();
