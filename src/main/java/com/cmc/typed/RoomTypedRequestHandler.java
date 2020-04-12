@@ -40,7 +40,7 @@ public class RoomTypedRequestHandler {
 
     public RoomTypedRequestHandler(RoomType type) {
         this.type = type;
-        this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1; // TODO
+        this.roomsNumber = getLastRoomOfThisType() - getFirstRoomOfThisType() + 1;
         this.bookInfoList = new ArrayList<>();
         this.averageStatistics = new AverageStatistics(type);
     }
@@ -55,9 +55,6 @@ public class RoomTypedRequestHandler {
         guestInformation.add(checkInInfo);
     }
 
-    public void removeFromGuestInformation(BookingInfo info) {
-        guestInformation.removeIf(x -> x.equals(info));//TODO
-    }
 
     public int getPrice() {
         return type.getPricePerNight();

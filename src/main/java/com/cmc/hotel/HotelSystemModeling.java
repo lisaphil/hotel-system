@@ -27,7 +27,6 @@ public class HotelSystemModeling implements Runnable {
     private LocalDate finishDate;
     @Getter
     private LocalDateTime currentTime;
-    private long deltaHours = 2; // TODO make random
     private RandomGenerator randomGenerator;
     @Getter
     private boolean finish;
@@ -61,7 +60,7 @@ public class HotelSystemModeling implements Runnable {
 
 
     private void next() {
-        deltaHours = randomGenerator.generateDeltaHours();
+        long deltaHours = randomGenerator.generateDeltaHours();
         currentTime = currentTime.plusHours(deltaHours);
     }
 
