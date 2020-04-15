@@ -1,13 +1,12 @@
 package com.cmc.hotel;
 
-import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
-import com.cmc.typed.TypedNumberOfRooms;
 import com.cmc.info.BookingInfo;
 import com.cmc.random.RandomGenerator;
 import com.cmc.statistics.RequestsStatistics;
 import com.cmc.typed.RoomType;
 import com.cmc.typed.RoomTypedRequestHandler;
+import com.cmc.typed.TypedNumberOfRooms;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,35 +84,32 @@ public class HotelSystemModeling implements Runnable {
             try {
                 Thread.sleep(100);
                 performEvent(roomType, bookingInfo, currentTime);
-            } catch (BookingException e) {
-                System.out.println(e.getMessage());
-                requestsStatistics.log(e);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (CheckInException e) {
                 System.out.println(e.getMessage());
-                requestsStatistics.log(e);
             }
             next();
         }
         finish = true;
     }
 
-    private void performEvent(RoomType roomType, BookingInfo bookingInfo, LocalDate currentTime) throws BookingException, CheckInException {
+    private void performEvent(RoomType roomType, BookingInfo bookingInfo, LocalDate currentTime) throws  CheckInException {
         hotelSystem.checkOutAllNow(currentTime);
         hotelSystem.checkInAllNow(currentTime);
         RandomGenerator.ActionType actionType = randomGenerator.generateEvent();
         boolean pay = randomGenerator.getPayed();
+        RoomType returnedRoomType = null;
         switch (actionType) {
             case CheckIn:
                 bookingInfo.setFrom(currentTime);
-                hotelSystem.checkIn(roomType, bookingInfo, pay);
+                returnedRoomType = hotelSystem.checkIn(roomType, bookingInfo, pay);
                 break;
             case Book:
                 bookingInfo.setPayed(pay);
-                hotelSystem.book(roomType, bookingInfo);
+                returnedRoomType = hotelSystem.book(roomType, bookingInfo);
         }
-        requestsStatistics.log(actionType);
+        requestsStatistics.log(actionType, returnedRoomType);
     }
 
     public double getRequestsStatistics(RandomGenerator.ActionType actionType) {

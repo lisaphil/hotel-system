@@ -1,6 +1,5 @@
 package com.cmc.hotel;
 
-import com.cmc.exceptions.BookingException;
 import com.cmc.exceptions.CheckInException;
 import com.cmc.info.BookingInfo;
 import com.cmc.typed.RoomType;
@@ -15,7 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cmc.typed.RoomType.*;
-import static com.cmc.typed.RoomTypedRequestHandler.*;
+import static com.cmc.typed.RoomTypedRequestHandler.fullBookingMessage;
+import static com.cmc.typed.RoomTypedRequestHandler.fullHotelMessage;
 import static java.util.stream.Collectors.toList;
 
 public class Hotel {
@@ -55,7 +55,7 @@ public class Hotel {
         handlers = ImmutableList.copyOf(rooms);
     }
 
-    public RoomType book(RoomType roomType, BookingInfo info) throws BookingException {
+    public RoomType book(RoomType roomType, BookingInfo info) {
         info.setUniqueId(generateUniqueId());
         boolean bookingResult = handlers.stream()
                 .filter(x -> x.getType().equals(roomType))
@@ -67,7 +67,8 @@ public class Hotel {
             if (nextAvailableRoomType.isPresent() && nextAvailableRoomType.get().book(info)) {
                 return nextAvailableRoomType.get().getType();
             }
-            throw new BookingException(fullBookingMessage, roomType);
+            System.out.println(fullBookingMessage);
+            return null;
         }
         return roomType;
     }
@@ -83,26 +84,27 @@ public class Hotel {
                         .filter(x -> x.getType().equals(roomType))
                         .findFirst()
                         .get();
-        try {
-            roomTypedRequestHandler.checkIn(info, pay);
+        if (roomTypedRequestHandler.checkIn(info, pay) != 0) {
             return roomType;
-        } catch (CheckInException e) {
-        }
-        info.setPayed(pay);
-        try {
+        } else {
+            info.setPayed(pay);
             RoomType newRoomType = book(roomType, info);
-            RoomTypedRequestHandler newRoomTypedRequestHandler =
-                    handlers.stream()
-                            .filter(x -> x.getType().equals(newRoomType))
-                            .findFirst()
-                            .get();
-            newRoomTypedRequestHandler.checkIn(info, pay);
-            return newRoomType;
-        } catch (BookingException e) {
-            throw new CheckInException(fullHotelMessage, roomType);
-        } catch (CheckInException e) {
-            throw new CheckInException("something got wrong! sorry!", roomType);
+            if (newRoomType != null) {
+                RoomTypedRequestHandler newRoomTypedRequestHandler =
+                        handlers.stream()
+                                .filter(x -> x.getType().equals(newRoomType))
+                                .findFirst()
+                                .get();
+                if (newRoomTypedRequestHandler.checkIn(info, pay) == 0) {
+                    throw new CheckInException("something got wrong! sorry!", roomType);
+                }
+                return newRoomType;
+            } else {
+                System.out.println(fullHotelMessage);
+                return null;
+            }
         }
+
     }
 
     public List<java.lang.Double> checkInAllNow(LocalDate currentTime) {
@@ -114,12 +116,12 @@ public class Hotel {
     }
 
     public void log(LocalDate currentTime) {
-        handlers.stream().map(x-> x.log(currentTime)).filter(Objects::nonNull).collect(Collectors.toList());
+        handlers.stream().map(x -> x.log(currentTime)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public List<java.lang.String> checkOutAllNow(LocalDate currentTime) {
         return handlers.stream()
-               .map(x-> x.checkOutAllNow(currentTime))
+                .map(x -> x.checkOutAllNow(currentTime))
                 .flatMap(Collection::parallelStream)
                 .collect(toList());
     }

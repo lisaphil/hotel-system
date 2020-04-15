@@ -108,7 +108,7 @@ public class RoomTypedRequestHandler {
             addToGuestInformation(newInfo, roomNumber, price);
             return price;
         }
-        throw new CheckInException(noBookingMessage, type);
+        return 0.0;
     }
 
     public List<Double> checkInToday(LocalDate currentTime) {

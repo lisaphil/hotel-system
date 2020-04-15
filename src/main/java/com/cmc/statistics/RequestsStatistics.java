@@ -1,8 +1,7 @@
 package com.cmc.statistics;
 
-import com.cmc.exceptions.BookingException;
-import com.cmc.exceptions.CheckInException;
 import com.cmc.random.RandomGenerator;
+import com.cmc.typed.RoomType;
 
 public class RequestsStatistics {
     int handledBookRequest;
@@ -15,19 +14,24 @@ public class RequestsStatistics {
         this.allBookRequest = 0;
         this.handledCheckInRequest = 0;
     }
-    public void log(RandomGenerator.ActionType actionType) {
-        switch (actionType) {
-            case CheckIn:
-                allCheckInRequest++;
-                handledCheckInRequest++;
-                break;
-            case Book:
+
+    public void log(RandomGenerator.ActionType actionType, RoomType returnedRoomType) {
+        if (returnedRoomType != null) {
+            if (actionType.equals(RandomGenerator.ActionType.Book)) {
                 allBookRequest++;
-                handledBookRequest++;
+                handledBookRequest ++;
+            }
+            allCheckInRequest++;
+            handledCheckInRequest ++;
+        } else {
+            if (actionType.equals(RandomGenerator.ActionType.Book)) {
+                allBookRequest++;
+            } else {
                 allCheckInRequest++;
-                handledCheckInRequest++;
+            }
         }
     }
+
     public double get(RandomGenerator.ActionType actionType) {
         switch (actionType) {
             case CheckIn:
@@ -37,12 +41,4 @@ public class RequestsStatistics {
         }
         return 0.00;
     }
-    public void log(CheckInException e) {
-        allCheckInRequest++;
-    }
-    public void log(BookingException e) {
-        allBookRequest++;
-    }
-
-
 }
