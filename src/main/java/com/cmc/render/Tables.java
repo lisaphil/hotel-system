@@ -13,7 +13,7 @@ public class Tables {
     private DefaultTableModel tableBookModel;
     private DefaultTableModel tableCheckInModel;
     private static String[] columnsBookHeader = Stream.of(BookingInfo.class.getDeclaredFields()).map(Field::getName).toArray(String[]::new);
-    private static String[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).map(Field::getName).toArray(String[]::new);
+    private static String[] columnsCheckInHeader = Stream.of(CheckInInfo.class.getDeclaredFields()).skip(1).map(Field::getName).toArray(String[]::new);
 
     public DefaultTableModel getBookjTable() {
         tableBookModel = new DefaultTableModel();
