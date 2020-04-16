@@ -26,11 +26,7 @@ public class RandomGenerator {
 
 
     public long generateDeltaHours() {
-        int result = randomDelta.nextInt(5);
-        while (result <= 0) {
-            result = randomDelta.nextInt(5);
-        }
-        return result;
+        return randomDelta.nextInt(4) + 1;
     }
 
     public boolean getPayed() {
